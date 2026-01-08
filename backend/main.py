@@ -29,8 +29,8 @@ allowed_origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000", 
     "http://localhost:5173",
-    "https://your-frontend-url.netlify.app",
-    "https://your-frontend-url.vercel.app"
+    "https://695f974bdcf643fdd3303f75--brilliant-quokka-863185.netlify.app",
+    "https://brilliant-quokka-863185.netlify.app"
 ]
 
 # Add production frontend URL from environment if available

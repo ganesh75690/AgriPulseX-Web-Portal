@@ -4,7 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "18"
-  VITE_API_URL = "https://your-backend-url.onrender.com"
+  VITE_API_URL = "https://agripulsex-web-portal.onrender.com"
 
 [[redirects]]
   from = "/*"
