@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriPulseX Debug - Simple Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #2f9d58 0%, #237a3f 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .test-box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .success { background: rgba(76, 175, 80, 0.3); }
+        .error { background: rgba(244, 67, 54, 0.3); }
+        button {
+            background: #2f9d58;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #237a3f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        #output {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 AgriPulseX Frontend Diagnostics</h1>
+        <p>Checking why the application isn't displaying properly...</p>
+        
+        <div class="test-box">
+            <h3>1. CSS & Styling Test</h3>
+            <p>If you can see this green gradient background and styled boxes, CSS is working.</p>
+            <button onclick="testCSS()">Test CSS Loading</button>
+            <div id="css-result"></div>
+        </div>
+
+        <div class="test-box">
+            <h3>2. JavaScript Bundle Test</h3>
+            <button onclick="testJS()">Test JavaScript Bundle</button>
+            <div id="js-result"></div>
+        </div>
+
+        <div class="test-box">
+            <h3>3. React App Test</h3>
+            <button onclick="testReact()">Test React App Loading</button>
+            <div id="react-result"></div>
+        </div>
+
+        <div class="test-box">
+            <h3>4. API Connection Test</h3>
+            <button onclick="testAPI()">Test Backend Connection</button>
+            <div id="api-result"></div>
+        </div>
+
+        <div class="test-box">
+            <h3>5. Manual App Load</h3>
+            <button onclick="loadApp()">Force Load AgriPulseX App</button>
+            <div id="app-result"></div>
+        </div>
+
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(message) {
+            output.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+        }
+
+        function testCSS() {
+            const result = document.getElementById('css-result');
+            const styles = window.getComputedStyle(result);
+            if (styles.backgroundColor && styles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                result.innerHTML = '<div class="success">✅ CSS is loading properly</div>';
+                log('CSS Test: PASSED');
+            } else {
+                result.innerHTML = '<div class="error">❌ CSS not loading</div>';
+                log('CSS Test: FAILED');
+            }
+        }
+
+        async function testJS() {
+            const result = document.getElementById('js-result');
+            result.innerHTML = '<div class="loading"></div> Testing JavaScript bundle...';
+            
+            try {
+                const response = await fetch('https://brilliant-quokka-863185.netlify.app/assets/index-Cmar0IcB.js');
+                if (response.ok) {
+                    const text = await response.text();
+                    if (text.includes('react') && text.includes('createRoot')) {
+                        result.innerHTML = '<div class="success">✅ JavaScript bundle contains React</div>';
+                        log('JS Test: PASSED - Bundle contains React');
+                    } else {
+                        result.innerHTML = '<div class="error">❌ JavaScript bundle missing React</div>';
+                        log('JS Test: FAILED - React not found in bundle');
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Failed to load JavaScript: ${error.message}</div>`;
+                log(`JS Test: FAILED - ${error.message}`);
+            }
+        }
+
+        async function testReact() {
+            const result = document.getElementById('react-result');
+            
+            // Check if React is already loaded
+            if (window.React && window.ReactDOM) {
+                result.innerHTML = '<div class="success">✅ React is already loaded</div>';
+                log('React Test: PASSED - React already available');
+                return;
+            }
+            
+            result.innerHTML = '<div class="loading"></div> Loading React...';
+            
+            try {
+                // Load React from CDN to test
+                const reactScript = document.createElement('script');
+                reactScript.src = 'https://unpkg.com/react@18/umd/react.production.min.js';
+                reactScript.onload = () => {
+                    const domScript = document.createElement('script');
+                    domScript.src = 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js';
+                    domScript.onload = () => {
+                        result.innerHTML = '<div class="success">✅ React loaded from CDN</div>';
+                        log('React Test: PASSED - React loaded from CDN');
+                    };
+                    document.head.appendChild(domScript);
+                };
+                document.head.appendChild(reactScript);
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Failed to load React: ${error.message}</div>`;
+                log(`React Test: FAILED - ${error.message}`);
+            }
+        }
+
+        async function testAPI() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = '<div class="loading"></div> Testing API...';
+            
+            try {
+                const response = await fetch('https://agripulsex-web-portal.onrender.com/');
+                const data = await response.json();
+                result.innerHTML = '<div class="success">✅ Backend API is working</div>';
+                log('API Test: PASSED - Backend responding');
+                log('API Response: ' + JSON.stringify(data));
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ API connection failed: ${error.message}</div>`;
+                log(`API Test: FAILED - ${error.message}`);
+            }
+        }
+
+        async function loadApp() {
+            const result = document.getElementById('app-result');
+            result.innerHTML = '<div class="loading"></div> Attempting to load AgriPulseX app...';
+            
+            try {
+                // Create a container for the app
+                const appContainer = document.createElement('div');
+                appContainer.id = 'agripulsex-app';
+                appContainer.style.cssText = 'background: white; border-radius: 10px; padding: 20px; margin: 20px 0; min-height: 400px;';
+                result.parentNode.insertBefore(appContainer, result.nextSibling);
+                
+                // Load the actual app script
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.src = 'https://brilliant-quokka-863185.netlify.app/assets/index-Cmar0IcB.js';
+                
+                script.onload = () => {
+                    result.innerHTML = '<div class="success">✅ App script loaded</div>';
+                    log('App Load: Script loaded successfully');
+                    
+                    // Check if app rendered after 2 seconds
+                    setTimeout(() => {
+                        const root = document.getElementById('root');
+                        if (root && root.children.length > 0) {
+                            log('App Load: SUCCESS - React app rendered in #root');
+                        } else {
+                            log('App Load: FAILED - React app not rendered in #root');
+                        }
+                    }, 2000);
+                };
+                
+                script.onerror = (error) => {
+                    result.innerHTML = '<div class="error">❌ Failed to load app script</div>';
+                    log('App Load: FAILED - Script error');
+                };
+                
+                document.head.appendChild(script);
+                
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+                log(`App Load: ERROR - ${error.message}`);
+            }
+        }
+
+        // Auto-run some tests
+        window.addEventListener('load', () => {
+            log('=== AgriPulseX Diagnostics Started ===');
+            setTimeout(testCSS, 500);
+            setTimeout(testAPI, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -266,7 +266,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative animate-fadeIn" 
          style={{
-           backgroundImage: 'url("/src/assests/agri.jpg")',
+           backgroundImage: 'url("/agri.jpg")',
            backgroundSize: 'cover',
            backgroundPosition: 'center',
            backgroundRepeat: 'no-repeat'
@@ -278,7 +278,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
       <div className="relative z-10 w-full max-w-md animate-slideUp">
         <div className="text-center mb-6 animate-slideDown">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2f9d58] rounded-lg mb-3 transform hover:scale-110 transition-transform duration-300 shadow-lg hover:shadow-xl overflow-hidden">
-            <img src="/src/assests/agriculture.png" alt="AgriPulseX Logo" className="w-full h-full object-cover" />
+            <img src="/agriculture.png" alt="AgriPulseX Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-white mb-1" style={{fontSize: '4rem', fontWeight: 'bold'}}>AgriPulseX</h1>
           <p className="text-lg text-white"> Crop Risk & Supply-Chain Decision Intelligence</p>
