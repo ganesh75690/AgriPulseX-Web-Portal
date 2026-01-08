@@ -1,0 +1,13 @@
+[
+  {
+    "analysis_id": "ANA_20260108_150812",
+    "timestamp": "2026-01-08T15:08:12.218746",
+    "farmer_id": "FARM001",
+    "region": "Andhra Pradesh",
+    "disease": "Early Blight",
+    "severity": "High",
+    "confidence": "84%",
+    "severity_score": 3,
+    "confidence_numeric": 84
+  }
+]

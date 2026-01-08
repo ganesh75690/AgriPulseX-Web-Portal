@@ -1,0 +1,13 @@
+[
+  {
+    "analysis_id": "TEST_001",
+    "timestamp": "2026-01-07T21:30:00",
+    "farmer_id": "debug_farmer",
+    "region": "debug_region",
+    "disease": "Healthy",
+    "severity": "Low",
+    "confidence": "90%",
+    "severity_score": 1,
+    "confidence_numeric": 90
+  }
+]

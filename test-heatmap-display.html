@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatmap Display Test</title>
+</head>
+<body>
+    <h1>Heatmap Display Test</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        async function testHeatmapDisplay() {
+            try {
+                // Test with a simple image
+                const canvas = document.createElement('canvas');
+                canvas.width = 224;
+                canvas.height = 224;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#8B4513'; // Brown color
+                ctx.fillRect(0, 0, 224, 224);
+                
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                const formData = new FormData();
+                formData.append('file', blob, 'test.png');
+                
+                const response = await fetch('http://127.0.0.1:8000/api/v2/analyze-image', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                const heatmapData = result.data.image_analysis.heatmap;
+                
+                // Display the heatmap
+                document.getElementById('test-results').innerHTML = `
+                    <h2>✅ Analysis Results</h2>
+                    <p><strong>Disease:</strong> ${result.data.image_analysis.disease}</p>
+                    <p><strong>Confidence:</strong> ${result.data.image_analysis.confidence}</p>
+                    <p><strong>Severity:</strong> ${result.data.image_analysis.severity}</p>
+                    
+                    <h3>Heatmap Display Test:</h3>
+                    <img src="${heatmapData}" alt="Heatmap" style="max-width: 400px; border: 2px solid #ccc; border-radius: 8px;">
+                    
+                    <h3>Heatmap Data Analysis:</h3>
+                    <p><strong>Data Length:</strong> ${heatmapData.length}</p>
+                    <p><strong>Starts with data:image:</strong> ${heatmapData.startsWith('data:image') ? '✅ Yes' : '❌ No'}</p>
+                    <p><strong>Contains base64:</strong> ${heatmapData.includes('base64,') ? '✅ Yes' : '❌ No'}</p>
+                `;
+                
+            } catch (error) {
+                document.getElementById('test-results').innerHTML = `
+                    <h2>❌ Error</h2>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        testHeatmapDisplay();
+    </script>
+</body>
+</html>

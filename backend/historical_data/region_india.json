@@ -1,0 +1,13 @@
+[
+  {
+    "analysis_id": "ANA_20260107_212939",
+    "timestamp": "2026-01-07T21:29:39.257133",
+    "farmer_id": "12345",
+    "region": "india",
+    "disease": "Early Blight",
+    "severity": "High",
+    "confidence": "84%",
+    "severity_score": 3,
+    "confidence_numeric": 84
+  }
+]

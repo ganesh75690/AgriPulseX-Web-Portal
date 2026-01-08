@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Search Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-container { max-width: 600px; margin: 0 auto; }
+        .input-field { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>👨‍🌾 Farmer Search Functionality Test</h1>
+        
+        <h2>Test Cases:</h2>
+        
+        <div class="test-case">
+            <h3>1. Search by Farmer ID</h3>
+            <p>Type "FARM001" - should show "Rajesh Kumar Singh"</p>
+            <input type="text" class="input-field" placeholder="Try typing FARM001..." oninput="testSearch(this.value, 'FARM001', 'Rajesh Kumar Singh')">
+            <div id="result1"></div>
+        </div>
+        
+        <div class="test-case">
+            <h3>2. Search by Farmer Name</h3>
+            <p>Type "Priya" - should show "FARM002 - Priya Sharma"</p>
+            <input type="text" class="input-field" placeholder="Try typing Priya..." oninput="testSearch(this.value, 'Priya', 'FARM002 - Priya Sharma')">
+            <div id="result2"></div>
+        </div>
+        
+        <div class="test-case">
+            <h3>3. Search by Partial ID</h3>
+            <p>Type "FARM01" - should show multiple matches</p>
+            <input type="text" class="input-field" placeholder="Try typing FARM01..." oninput="testPartialSearch(this.value)">
+            <div id="result3"></div>
+        </div>
+        
+        <div class="test-case">
+            <h3>4. Farmer Database</h3>
+            <p>Complete database of 30 farmers with IDs FARM001-FARM030</p>
+            <button onclick="showAllFarmers()" style="padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px;">Show All Farmers</button>
+            <div id="all-farmers"></div>
+        </div>
+    </div>
+
+    <script>
+        // Farmer database (same as in the app)
+        const farmerDatabase = [
+            { id: "FARM001", name: "Rajesh Kumar Singh" },
+            { id: "FARM002", name: "Priya Sharma" },
+            { id: "FARM003", name: "Amit Patel" },
+            { id: "FARM004", name: "Sunita Devi" },
+            { id: "FARM005", name: "Mohammed Ali" },
+            { id: "FARM006", name: "Lakshmi Narayanan" },
+            { id: "FARM007", name: "Gurpreet Singh" },
+            { id: "FARM008", name: "Anjali Reddy" },
+            { id: "FARM009", name: "Rahul Verma" },
+            { id: "FARM010", name: "Kavita Nair" },
+            { id: "FARM011", name: "Sanjay Kumar" },
+            { id: "FARM012", name: "Meera Joshi" },
+            { id: "FARM013", name: "Baldev Singh" },
+            { id: "FARM014", name: "Shanti Devi" },
+            { id: "FARM015", name: "Ramesh Babu" },
+            { id: "FARM016", name: "Geeta Kumari" },
+            { id: "FARM017", name: "Vijay Kumar" },
+            { id: "FARM018", name: "Anita Singh" },
+            { id: "FARM019", name: "Prakash Patel" },
+            { id: "FARM020", name: "Rekha Sharma" },
+            { id: "FARM021", name: "Mukesh Yadav" },
+            { id: "FARM022", name: "Pooja Nair" },
+            { id: "FARM023", name: "Dilip Kumar" },
+            { id: "FARM024", name: "Radhika Devi" },
+            { id: "FARM025", name: "Manoj Singh" },
+            { id: "FARM026", name: "Swati Reddy" },
+            { id: "FARM027", name: "Rajendra Kumar" },
+            { id: "FARM028", name: "Anjali Sharma" },
+            { id: "FARM029", name: "Gopal Singh" },
+            { id: "FARM030", name: "Meenakshi Patel" }
+        ];
+
+        function testSearch(value, expected, description) {
+            if (value.toLowerCase().includes(expected.toLowerCase())) {
+                document.getElementById('result1').innerHTML = `<span class="success">✅ Found: ${description}</span>`;
+            } else {
+                document.getElementById('result1').innerHTML = `<span class="error">❌ Keep typing...</span>`;
+            }
+        }
+
+        function testPartialSearch(value) {
+            const filtered = farmerDatabase.filter(farmer => 
+                farmer.id.toLowerCase().includes(value.toLowerCase()) ||
+                farmer.name.toLowerCase().includes(value.toLowerCase())
+            ).slice(0, 8);
+            
+            if (filtered.length > 0) {
+                const results = filtered.map(f => `${f.id} - ${f.name}`).join('<br>');
+                document.getElementById('result3').innerHTML = `<span class="success">✅ Found ${filtered.length} matches:<br>${results}</span>`;
+            } else {
+                document.getElementById('result3').innerHTML = `<span class="error">❌ No matches found</span>`;
+            }
+        }
+
+        function showAllFarmers() {
+            const farmerList = farmerDatabase.map(f => `${f.id}: ${f.name}`).join('<br>');
+            document.getElementById('all-farmers').innerHTML = `<div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 10px;">${farmerList}</div>`;
+        }
+    </script>
+</body>
+</html>

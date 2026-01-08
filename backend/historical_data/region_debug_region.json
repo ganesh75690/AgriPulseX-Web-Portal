@@ -1,0 +1,35 @@
+[
+  {
+    "analysis_id": "TEST_001",
+    "timestamp": "2026-01-07T21:30:00",
+    "farmer_id": "debug_farmer",
+    "region": "debug_region",
+    "disease": "Healthy",
+    "severity": "Low",
+    "confidence": "90%",
+    "severity_score": 1,
+    "confidence_numeric": 90
+  },
+  {
+    "analysis_id": "ANA_20260107_212414",
+    "timestamp": "2026-01-07T21:24:14.849229",
+    "farmer_id": "debug_api_farmer",
+    "region": "Debug Region",
+    "disease": "Healthy",
+    "severity": "Low",
+    "confidence": "90%",
+    "severity_score": 1,
+    "confidence_numeric": 90
+  },
+  {
+    "analysis_id": "ANA_20260107_212442",
+    "timestamp": "2026-01-07T21:24:42.703337",
+    "farmer_id": "debug_api_farmer",
+    "region": "Debug Region",
+    "disease": "Healthy",
+    "severity": "Low",
+    "confidence": "90%",
+    "severity_score": 1,
+    "confidence_numeric": 90
+  }
+]
