@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_CONFIG, createApiUrl } from "../api/config";
 
 interface DetectionResult {
   disease: string;
@@ -133,7 +134,7 @@ const ImageDetection = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      const response = await fetch("http://127.0.0.1:8000/api/v2/analyze-image", {
+      const response = await fetch(createApiUrl(API_CONFIG.ENDPOINTS.ANALYZE_IMAGE), {
         method: "POST",
         body: formData,
         signal: controller.signal,
@@ -180,7 +181,7 @@ const ImageDetection = () => {
       setGeneratingPDF(true);
       setError("");
 
-      const response = await fetch("http://127.0.0.1:8000/api/v2/generate-pdf", {
+      const response = await fetch(createApiUrl(API_CONFIG.ENDPOINTS.GENERATE_PDF), {
         method: "POST",
         body: formData,
       });
@@ -220,7 +221,7 @@ const ImageDetection = () => {
       setLoadingHistory(true);
       setError("");
 
-      const response = await fetch(`http://127.0.0.1:8000/api/v2/farmer-history/${farmerId}?limit=10`);
+      const response = await fetch(createApiUrl(`/api/v2/farmer-history/${farmerId}?limit=10`));
       
       if (!response.ok) {
         const errorText = await response.text();
