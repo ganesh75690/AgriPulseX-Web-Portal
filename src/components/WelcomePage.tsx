@@ -84,7 +84,7 @@ export default function WelcomePage({ onContinue }: WelcomePageProps) {
           <div className="flex items-center gap-3 mb-3">
             <Shield className="w-10 h-10" />
             <div>
-              <h1 className="text-2xl">Officer System Orientation</h1>
+              <h1 className="text-4xl font-bold">Welcome to Officer System Orientation</h1>
               <p className="text-sm text-white/70 mt-1">AgriPulseX - Decision Intelligence System</p>
             </div>
           </div>

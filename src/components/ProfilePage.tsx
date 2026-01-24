@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { User, Mail, Phone, Calendar, MapPin, Shield, Briefcase, Award, Clock, FileCheck, Camera, Download, Globe, Send, X, Paperclip, Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
+import { User, Mail, Phone, Calendar, MapPin, Shield, Briefcase, Award, Clock, FileCheck, Camera, Download, Globe, Send, X, Paperclip, Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, TrendingUp, AlertTriangle, CheckCircle, Activity, Zap, Edit2, Save, XCircle } from 'lucide-react';
 import LogoutDialog from './LogoutDialog';
 
 interface ProfilePageProps {
@@ -15,22 +15,16 @@ interface ProfilePageProps {
   };
   lastLogin: Date | null;
   onLogout: () => void;
+  role?: 'officer' | 'field-employee';
 }
 
 // Language Context
 type Language = 'en' | 'hi';
 
-const LanguageContext = React.createContext<{
-  language: Language;
-  setLanguage: (lang: Language) => void;
-} | undefined>({
-  language: 'en',
-  setLanguage: () => {}
-});
-
 const translations = {
     en: {
       officerProfile: 'Officer Profile',
+      employeeProfile: 'Employee Profile',
       completeInfo: 'Complete employee information and system activity',
       basicInfo: 'Basic Info',
       department: 'Department',
@@ -48,9 +42,14 @@ const translations = {
       recentActivity: 'Recent Activity',
       certificationsTraining: 'Certifications & Training',
       officerAccountability: 'Officer Accountability',
+      employeeAccountability: 'Employee Accountability',
       decisionsApproved: 'Decisions Approved',
       casesReviewed: 'Cases Reviewed',
       fieldVerifications: 'Field Verifications',
+      reportsSubmitted: 'Reports Submitted',
+      tasksCompleted: 'Tasks Completed',
+      samplesCollected: 'Samples Collected',
+      inspectionsConducted: 'Inspections Conducted',
       reportsGenerated: 'Reports Generated',
       downloadCertificate: 'Download Certificate',
       allActionsLogged: 'All actions are logged for audit',
@@ -65,11 +64,25 @@ const translations = {
       status: 'Status',
       certificationType: 'Certification Type',
       record: 'Record',
-      details: 'Details'
+      details: 'Details',
+      aiGuide: 'AI Guide',
+      getAIGuidance: 'Get AI guidance',
+      aiGuideTitle: 'AgriPulseX AI Guide',
+      aiGuideSubtitle: 'Your intelligent assistant for officer guidance',
+      welcomeToAIGuide: 'Welcome to AI Guide',
+      hereToHelp: 'I\'m here to help you with:',
+      reportGuidelines: 'Report submission guidelines',
+      diseaseProtocols: 'Disease identification protocols',
+      containmentProcedures: 'Containment procedures',
+      systemNavigation: 'System navigation',
+      askPlaceholder: 'Ask me about reports, diseases, containment procedures...',
+      send: 'Send',
+      poweredByAI: 'Powered by AI • Responses are for guidance purposes only'
     },
     hi: {
       officerProfile: 'अधिकारी प्रोफाइल',
-      completeInfo: 'कर्मचय पूर्णान और सिस्टम गतिव',
+      employeeProfile: 'कर्मचारी प्रोफाइल',
+      completeInfo: 'पूर्ण कर्मचारी जानकारी और सिस्टम गतिविधि',
       basicInfo: 'बुनिक सूचना',
       department: 'विभाग',
       regionJurisdiction: 'क्षेत्र अधिकार',
@@ -86,6 +99,7 @@ const translations = {
       recentActivity: 'हाल मौसे गतिविधि',
       certificationsTraining: 'प्रमाणपत्र प्रकार प्रशिक्षण',
       officerAccountability: 'अधिकारी जवाबदारव',
+      employeeAccountability: 'कर्मचारी जवाबदारव',
       decisionsApproved: 'निर्णये स्वीकृत',
       casesReviewed: 'मामलों की गई',
       fieldVerifications: 'फील्ड सत्यापन',
@@ -103,15 +117,37 @@ const translations = {
       status: 'स्थिति',
       certificationType: 'प्रमाणपत्र प्रकार',
       record: 'रिकॉर्ड',
-      details: 'विवरात'
+      details: 'विवरण',
+      aiGuide: 'एआई गाइड',
+      getAIGuidance: 'एआई मार्गदर्शन प्राप्त करें',
+      aiGuideTitle: 'एग्रीपल्सएक्स एआई गाइड',
+      aiGuideSubtitle: 'अधिकारी मार्गदर्शन के लिए आपका बुद्धिमान सहायक',
+      welcomeToAIGuide: 'एआई गाइड में आपका स्वागत है',
+      hereToHelp: 'मैं आपकी सहायता के लिए यहां हूँ:',
+      reportGuidelines: 'रिपोर्ट प्रस्तुति दिशानिर्देश',
+      diseaseProtocols: 'रोग पहचान प्रोटोकॉल',
+      containmentProcedures: 'नियंत्रण प्रक्रियाएं',
+      systemNavigation: 'सिस्टम नेविगेशन',
+      askPlaceholder: 'रिपोर्ट, रोग, नियंत्रण प्रक्रियाओं के बारे में पूछें...',
+      send: 'भेजें',
+      poweredByAI: 'एआई द्वारा संचालित • प्रतिक्रियाएं केवल मार्गदर्शन उद्देश्यों के लिए हैं'
     }
   };
 
-export default function ProfilePage({ officerData, lastLogin, onLogout }: ProfilePageProps) {
+export default function ProfilePage({ officerData, lastLogin, onLogout, role = 'officer' }: ProfilePageProps) {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [language, setLanguage] = useState<Language>('en');
   const [showMailCompose, setShowMailCompose] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedData, setEditedData] = useState({
+    name: officerData.name,
+    designation: officerData.designation,
+    region: officerData.region,
+    department: officerData.department,
+    email: officerData.email,
+    phone: officerData.phone
+  });
   const [mailData, setMailData] = useState({
     to: '',
     subject: '',
@@ -126,6 +162,23 @@ export default function ProfilePage({ officerData, lastLogin, onLogout }: Profil
       year: 'numeric' 
     });
   };
+
+  // Role-based activity statistics
+  const officerActivityStats = [
+    { label: 'Decisions Approved', value: '47', period: 'Last 12 months' },
+    { label: 'Cases Reviewed', value: '132', period: 'Last 12 months' },
+    { label: 'Field Verifications', value: '28', period: 'Last 6 months' },
+    { label: 'Reports Generated', value: '89', period: 'Last 12 months' }
+  ];
+
+  const fieldEmployeeActivityStats = [
+    { label: 'Reports Submitted', value: '156', period: 'Last 12 months' },
+    { label: 'Tasks Completed', value: '234', period: 'Last 12 months' },
+    { label: 'Samples Collected', value: '89', period: 'Last 6 months' },
+    { label: 'Inspections Conducted', value: '67', period: 'Last 12 months' }
+  ];
+
+  const activityStats = role === 'field-employee' ? fieldEmployeeActivityStats : officerActivityStats;
 
   const formatLastLogin = (date: Date | null) => {
     if (!date) return 'N/A';
@@ -255,14 +308,66 @@ ${officerData.phone}
     alert('Email client opened with your message!');
   };
 
-  const activityStats = [
-    { label: 'Decisions Approved', value: '47', period: 'Last 12 months' },
-    { label: 'Cases Reviewed', value: '132', period: 'Last 12 months' },
-    { label: 'Field Verifications', value: '28', period: 'Last 6 months' },
-    { label: 'Reports Generated', value: '89', period: 'Last 12 months' }
-  ];
+  const handleEditToggle = () => {
+    if (isEditing) {
+      // Cancel editing - reset to original data
+      setEditedData({
+        name: officerData.name,
+        designation: officerData.designation,
+        region: officerData.region,
+        department: officerData.department,
+        email: officerData.email,
+        phone: officerData.phone
+      });
+    }
+    setIsEditing(!isEditing);
+  };
 
-  const recentActivity = [
+  const handleInputChange = (field: string, value: string) => {
+    setEditedData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSaveProfile = () => {
+    // Validate required fields
+    if (!editedData.name || !editedData.email || !editedData.phone) {
+      alert('Please fill in all required fields (Name, Email, Phone)');
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(editedData.email)) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    // Validate phone format (basic)
+    const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+    if (!phoneRegex.test(editedData.phone.replace(/\s/g, ''))) {
+      alert('Please enter a valid phone number');
+      return;
+    }
+
+    // Simulate saving to backend
+    console.log('Saving profile data:', editedData);
+    
+    // Show success message
+    alert('Profile updated successfully!');
+    
+    // In a real app, you would make an API call here:
+    // fetch('/api/user/profile', {
+    //   method: 'PUT',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(editedData)
+    // });
+    
+    setIsEditing(false);
+  };
+
+  const officerRecentActivity = [
     { date: '2026-01-02', action: 'Approved Containment', case: 'CNT-2026-001', region: 'Punjab - Amritsar' },
     { date: '2025-12-29', action: 'Field Verification', case: 'CNT-2025-345', region: 'Punjab - Ludhiana' },
     { date: '2025-12-26', action: 'Report Generated', case: 'CNT-2025-340', region: 'Punjab - Patiala' },
@@ -270,10 +375,51 @@ ${officerData.phone}
     { date: '2025-12-20', action: 'Approved Containment', case: 'CNT-2025-335', region: 'Punjab - Bathinda' }
   ];
 
-  const certifications = [
+  const fieldEmployeeRecentActivity = [
+    { date: '2026-01-03', action: 'Sample Collection', case: 'SMP-2026-012', region: 'Punjab - Ludhiana' },
+    { date: '2026-01-01', action: 'Field Inspection', case: 'INS-2025-089', region: 'Punjab - Amritsar' },
+    { date: '2025-12-30', action: 'Report Submitted', case: 'RPT-2025-234', region: 'Punjab - Patiala' },
+    { date: '2025-12-28', action: 'Treatment Applied', case: 'TRT-2025-156', region: 'Punjab - Jalandhar' },
+    { date: '2025-12-25', action: 'Farm Visit', case: 'VIS-2025-445', region: 'Punjab - Firozpur' }
+  ];
+
+  const recentActivity = role === 'field-employee' ? fieldEmployeeRecentActivity : officerRecentActivity;
+
+  const officerCertifications = [
     { name: 'Plant Disease Management Specialist', issued: 'Ministry of Agriculture', year: '2023' },
     { name: 'Supply-Chain Risk Assessment', issued: 'National Institute of Agricultural Extension', year: '2022' },
     { name: 'Decision Intelligence Systems', issued: 'AgriPulseX Training Academy', year: '2024' }
+  ];
+
+  const fieldEmployeeCertifications = [
+    { name: 'Field Inspection Certification', issued: 'Agricultural Department', year: '2023' },
+    { name: 'Sample Collection Training', issued: 'AgriPulseX Field Academy', year: '2024' },
+    { name: 'Pesticide Application License', issued: 'Pesticide Control Board', year: '2022' }
+  ];
+
+  const certifications = role === 'field-employee' ? fieldEmployeeCertifications : officerCertifications;
+
+  // Performance metrics data
+  const officerPerformanceMetrics = {
+    responseTime: { value: '2.3 hrs', trend: 'down', change: '-15%' },
+    accuracy: { value: '94.2%', trend: 'up', change: '+3.1%' },
+    casesHandled: { value: '156', trend: 'up', change: '+12%' },
+    farmerSatisfaction: { value: '4.7/5', trend: 'up', change: '+0.3' }
+  };
+
+  const fieldEmployeePerformanceMetrics = {
+    responseTime: { value: '1.8 hrs', trend: 'down', change: '-20%' },
+    accuracy: { value: '91.5%', trend: 'up', change: '+2.8%' },
+    tasksCompleted: { value: '234', trend: 'up', change: '+18%' },
+    farmerRating: { value: '4.8/5', trend: 'up', change: '+0.4' }
+  };
+
+  const performanceMetrics = role === 'field-employee' ? fieldEmployeePerformanceMetrics : officerPerformanceMetrics;
+
+  const regionalAlerts = [
+    { type: 'warning', message: 'Late Blight detected in Amritsar region', count: 3, time: '2 hrs ago' },
+    { type: 'success', message: 'Containment completed in Ludhiana', count: 1, time: '5 hrs ago' },
+    { type: 'info', message: 'Weather advisory issued for Patiala', count: 1, time: '8 hrs ago' }
   ];
 
   return (
@@ -281,7 +427,7 @@ ${officerData.phone}
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-8 py-6">
         <div>
-          <h1 className="text-2xl text-gray-900 mb-1">{translations[language].officerProfile}</h1>
+          <h1 className="text-2xl text-gray-900 mb-1">{role === 'field-employee' ? translations[language].employeeProfile : translations[language].officerProfile}</h1>
           <p className="text-sm text-gray-600">{translations[language].completeInfo}</p>
         </div>
 
@@ -335,10 +481,74 @@ ${officerData.phone}
                     )}
                   </button>
                 </div>
-                <h2 className="text-xl text-gray-900 mb-1">{officerData.name}</h2>
-                <p className="text-sm text-gray-600">{officerData.designation}</p>
+                
+                {/* Name Display with Edit */}
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={editedData.name}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      className="text-xl text-center text-gray-900 bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2f9d58]"
+                      placeholder="Enter your name"
+                    />
+                  ) : (
+                    <h2 className="text-xl text-gray-900">{editedData.name}</h2>
+                  )}
+                </div>
+                
+                {/* Designation Display with Edit */}
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={editedData.designation}
+                      onChange={(e) => handleInputChange('designation', e.target.value)}
+                      className="text-sm text-center text-gray-600 bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2f9d58]"
+                      placeholder="Enter your designation"
+                    />
+                  ) : (
+                    <p className="text-sm text-gray-600">{editedData.designation}</p>
+                  )}
+                </div>
+                
                 <div className="mt-3 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs inline-block">
                   {officerData.employeeId}
+                </div>
+                
+                {/* Edit/Save Button */}
+                <div className="mt-4 flex justify-center gap-2">
+                  {isEditing ? (
+                    <>
+                      <button
+                        onClick={handleSaveProfile}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white rounded text-xs hover:bg-green-700 transition-colors shadow-sm"
+                        title="Save profile changes"
+                      >
+                        <Save className="w-3 h-3" />
+                        Save
+                      </button>
+                      <button
+                        onClick={handleEditToggle}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-gray-600 text-white rounded text-xs hover:bg-gray-700 transition-colors shadow-sm"
+                        title="Cancel editing"
+                      >
+                        <XCircle className="w-3 h-3" />
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={handleEditToggle}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-[#2f9d58] text-white rounded text-xs hover:bg-[#237a3f] transition-colors shadow-sm"
+                        title="Edit profile"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                        Edit Profile
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -361,7 +571,17 @@ ${officerData.phone}
                   <Briefcase className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <div className="text-xs text-gray-600 mb-0.5">{translations[language].department}</div>
-                    <div className="text-sm text-gray-900">{officerData.department}</div>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editedData.department}
+                        onChange={(e) => handleInputChange('department', e.target.value)}
+                        className="text-sm text-gray-900 bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2f9d58] w-full"
+                        placeholder="Enter your department"
+                      />
+                    ) : (
+                      <div className="text-sm text-gray-900">{editedData.department}</div>
+                    )}
                   </div>
                 </div>
 
@@ -369,7 +589,17 @@ ${officerData.phone}
                   <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <div className="text-xs text-gray-600 mb-0.5">{translations[language].regionJurisdiction}</div>
-                    <div className="text-sm text-gray-900">{officerData.region}</div>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editedData.region}
+                        onChange={(e) => handleInputChange('region', e.target.value)}
+                        className="text-sm text-gray-900 bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2f9d58] w-full"
+                        placeholder="Enter your region"
+                      />
+                    ) : (
+                      <div className="text-sm text-gray-900">{editedData.region}</div>
+                    )}
                   </div>
                 </div>
 
@@ -377,15 +607,27 @@ ${officerData.phone}
                   <Mail className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <div className="text-xs text-gray-600 mb-0.5">{translations[language].officialEmail}</div>
-                    <div className="text-sm text-gray-900 break-all">{officerData.email}</div>
-                    <button
-                      onClick={() => setShowMailCompose(true)}
-                      className="mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors shadow-sm"
-                      title="Compose new email"
-                    >
-                      <Mail className="w-3 h-3" />
-                      Compose Mail
-                    </button>
+                    {isEditing ? (
+                      <input
+                        type="email"
+                        value={editedData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        className="text-sm text-gray-900 bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2f9d58] w-full"
+                        placeholder="Enter your email"
+                      />
+                    ) : (
+                      <div className="text-sm text-gray-900 break-all">{editedData.email}</div>
+                    )}
+                    {!isEditing && (
+                      <button
+                        onClick={() => setShowMailCompose(true)}
+                        className="mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors shadow-sm"
+                        title="Compose new email"
+                      >
+                        <Mail className="w-3 h-3" />
+                        Compose Mail
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -393,7 +635,17 @@ ${officerData.phone}
                   <Phone className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <div className="text-xs text-gray-600 mb-0.5">{translations[language].contactNumber}</div>
-                    <div className="text-sm text-gray-900">{officerData.phone}</div>
+                    {isEditing ? (
+                      <input
+                        type="tel"
+                        value={editedData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        className="text-sm text-gray-900 bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2f9d58] w-full"
+                        placeholder="Enter your phone number"
+                      />
+                    ) : (
+                      <div className="text-sm text-gray-900">{editedData.phone}</div>
+                    )}
                   </div>
                 </div>
 
@@ -422,22 +674,45 @@ ${officerData.phone}
                 {translations[language].systemAccess}
               </h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">{translations[language].dashboardAccess}:</span>
-                  <span className="text-green-700">Granted</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">{translations[language].containmentControl}:</span>
-                  <span className="text-green-700">Granted</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">{translations[language].approvalAuthority}:</span>
-                  <span className="text-green-700">Authorized</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">{translations[language].reportGeneration}:</span>
-                  <span className="text-green-700">Granted</span>
-                </div>
+                {role === 'field-employee' ? (
+                  <>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Field Dashboard:</span>
+                      <span className="text-green-700">Granted</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Report Submission:</span>
+                      <span className="text-green-700">Granted</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Sample Collection:</span>
+                      <span className="text-green-700">Authorized</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Mobile Access:</span>
+                      <span className="text-green-700">Enabled</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">{translations[language].dashboardAccess}:</span>
+                      <span className="text-green-700">Granted</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">{translations[language].containmentControl}:</span>
+                      <span className="text-green-700">Granted</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">{translations[language].approvalAuthority}:</span>
+                      <span className="text-green-700">Authorized</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">{translations[language].reportGeneration}:</span>
+                      <span className="text-green-700">Granted</span>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <div className="flex items-center gap-2 text-xs text-amber-700">
@@ -454,7 +729,7 @@ ${officerData.phone}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h3 className="text-gray-900 mb-4 flex items-center gap-2">
                 <Award className="w-5 h-5 text-[#2f9d58]" />
-                {translations[language].activityStatistics}
+                {role === 'field-employee' ? translations[language].employeeAccountability : translations[language].officerAccountability}
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 {activityStats.map((stat, index) => (
@@ -485,6 +760,81 @@ ${officerData.phone}
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Performance Dashboard */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-gray-900 mb-4 flex items-center gap-2">
+                <Activity className="w-5 h-5 text-[#2f9d58]" />
+                Performance Dashboard
+              </h2>
+              
+              {/* Key Metrics Grid */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {Object.entries(performanceMetrics).map(([key, metric]) => (
+                  <div key={key} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-gray-600">
+                        {role === 'field-employee' ? (
+                          key === 'responseTime' ? 'Response Time' :
+                          key === 'accuracy' ? 'Accuracy' :
+                          key === 'tasksCompleted' ? 'Tasks Completed' :
+                          key === 'farmerRating' ? 'Farmer Rating' : key
+                        ) : (
+                          key === 'responseTime' ? 'Response Time' :
+                          key === 'accuracy' ? 'Accuracy' :
+                          key === 'casesHandled' ? 'Cases Handled' :
+                          key === 'farmerSatisfaction' ? 'Farmer Satisfaction' : key
+                        )}
+                      </span>
+                      <div className={`flex items-center gap-1 text-xs ${
+                        metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {metric.trend === 'up' ? (
+                          <TrendingUp className="w-3 h-3" />
+                        ) : (
+                          <TrendingUp className="w-3 h-3 rotate-180" />
+                        )}
+                        {metric.change}
+                      </div>
+                    </div>
+                    <div className="text-xl text-gray-900 font-semibold">{metric.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Regional Alerts */}
+              <div className="border-t border-gray-200 pt-4">
+                <h3 className="text-sm text-gray-900 mb-3 flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-amber-500" />
+                  Regional Alerts
+                </h3>
+                <div className="space-y-2">
+                  {regionalAlerts.map((alert, index) => (
+                    <div key={index} className={`flex items-start gap-3 p-3 rounded-lg ${
+                      alert.type === 'warning' ? 'bg-amber-50 border border-amber-200' :
+                      alert.type === 'success' ? 'bg-green-50 border border-green-200' :
+                      'bg-blue-50 border border-blue-200'
+                    }`}>
+                      <div className="flex-shrink-0 mt-0.5">
+                        {alert.type === 'warning' ? (
+                          <AlertTriangle className="w-4 h-4 text-amber-600" />
+                        ) : alert.type === 'success' ? (
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <Activity className="w-4 h-4 text-blue-600" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-gray-900">{alert.message}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {alert.count} case{alert.count > 1 ? 's' : ''} • {alert.time}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -534,7 +884,21 @@ ${officerData.phone}
             </div>
 
             {/* Logout Button */}
-            <div className="flex justify-center pt-6">
+            <div className="flex justify-center pt-6 space-x-4">
+              {/* Test Simple Logout Button */}
+              <button 
+                onClick={() => {
+                  console.log('Simple logout button clicked');
+                  onLogout();
+                }}
+                className="flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors shadow-md hover:shadow-lg"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span className="font-medium">Simple Logout</span>
+              </button>
+              
               <LogoutDialog onLogout={onLogout}>
                 <button className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-md hover:shadow-lg">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

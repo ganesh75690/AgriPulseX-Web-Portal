@@ -1,0 +1,23 @@
+"==========================================" 
+"AgriPulseX Diagnostic Report" 
+"Generated: Tue 13-01-26" 
+"" 
+"Backend Status: %http_code%" 
+"Frontend Status: %http_code%" 
+"" 
+"Processes:" 
+python.exe                    7812 Console                    1     74,196 K
+node.exe                     21296 Console                    1     41,224 K
+node.exe                     27312 Console                    1   2,13,032 K
+"" 
+"Ports:" 
+"" 
+"==========================================" 
+"" 
+"RECOMMENDATIONS:" 
+"1. If backend != 200: Backend API issue" 
+"2. If frontend != 200: Frontend issue" 
+"3. If both 200: Check browser CORS/Network" 
+"4. Run: npm start (guaranteed startup)" 
+"==========================================" 
+"" 

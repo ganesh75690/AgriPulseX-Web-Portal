@@ -1,0 +1,13 @@
+[
+  {
+    "analysis_id": "ANA_20260114_212155",
+    "timestamp": "2026-01-14T21:21:55.368402",
+    "farmer_id": "123221",
+    "region": "Amritsar",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "65%",
+    "severity_score": 1,
+    "confidence_numeric": 65
+  }
+]

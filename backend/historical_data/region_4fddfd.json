@@ -1,0 +1,13 @@
+[
+  {
+    "analysis_id": "ANA_20260112_171251",
+    "timestamp": "2026-01-12T17:12:51.193964",
+    "farmer_id": "3434",
+    "region": "4fddfd",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
+  }
+]

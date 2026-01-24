@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Network, CheckCircle, XCircle, AlertCircle, TrendingUp, Info, MapPin, Truck, Store, Warehouse, Eye, X, Clock, Package, AlertTriangle, Activity, Users, Thermometer, Calendar } from 'lucide-react';
+import { Network, CheckCircle, XCircle, AlertCircle, TrendingUp, Info, MapPin, Truck, Store, Warehouse, Eye, X, Clock, Package, AlertTriangle, Activity, Users, Thermometer, Calendar, Phone, Navigation, MessageCircle, FileText, Shield } from 'lucide-react';
+import SupplyChainShockIndex from './SupplyChainShockIndex';
 
 export default function SupplyChainMonitor() {
   const [fadeIn, setFadeIn] = useState(false);
@@ -8,6 +9,7 @@ export default function SupplyChainMonitor() {
   const [selectedRouteDetails, setSelectedRouteDetails] = useState<any>(null);
   const [showNetworkDialog, setShowNetworkDialog] = useState(false);
   const [selectedNetworkNode, setSelectedNetworkNode] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'monitor' | 'shock-index'>('monitor');
 
   useEffect(() => {
     setTimeout(() => setFadeIn(true), 200);
@@ -42,7 +44,53 @@ export default function SupplyChainMonitor() {
       storage: nodeType === 'mandi' ? '85% utilized' : 'N/A',
       equipment: nodeType === 'farm' ? '4 tractors, 2 harvesters, 1 irrigation system' :
                 nodeType === 'mandi' ? '12 cold storage units, 6 loading docks, 2 quality labs' :
-                '24 loading bays, 8 processing lines, 4 quality control stations'
+                '24 loading bays, 8 processing lines, 4 quality control stations',
+      transportContacts: nodeType === 'farm' ? {
+        coordinator: {
+          name: 'Farm Manager ' + nodeData.id,
+          phone: '+91-98765-' + nodeData.id + '000',
+          designation: 'Farm Zone Coordinator',
+          department: 'Agricultural Production Board'
+        },
+        drivers: [
+          { name: 'Driver ' + nodeData.id + '-1', phone: '+91-87654-' + nodeData.id + '001', vehicle: 'Tractor PB-' + nodeData.id + '-1111', capacity: '5 tonnes' },
+          { name: 'Driver ' + nodeData.id + '-2', phone: '+91-76543-' + nodeData.id + '002', vehicle: 'Harvester PB-' + nodeData.id + '-2222', capacity: '8 tonnes' }
+        ],
+        alternativeContacts: [
+          { name: 'District Farm Office', phone: '+91-98765-12345', type: 'Farm Support' },
+          { name: 'Agricultural Helpline', phone: '+91-1800-123-4567', type: '24/7 Support' }
+        ]
+      } : nodeType === 'mandi' ? {
+        coordinator: {
+          name: 'Mandi Manager ' + nodeData.id,
+          phone: '+91-98765-' + nodeData.id + '100',
+          designation: 'Mandi Operations Head',
+          department: 'Agricultural Marketing Board'
+        },
+        drivers: [
+          { name: 'Truck Driver ' + nodeData.id + '-1', phone: '+91-90123-' + nodeData.id + '101', vehicle: 'Truck PB-' + nodeData.id + '-3333', capacity: '12 tonnes' },
+          { name: 'Truck Driver ' + nodeData.id + '-2', phone: '+91-89012-' + nodeData.id + '102', vehicle: 'Truck PB-' + nodeData.id + '-4444', capacity: '15 tonnes' }
+        ],
+        alternativeContacts: [
+          { name: 'Mandi Control Room', phone: '+91-87654-' + nodeData.id + '200', type: 'Mandi Operations' },
+          { name: 'Quality Control Office', phone: '+91-76543-' + nodeData.id + '300', type: 'Quality Assurance' }
+        ]
+      } : {
+        coordinator: {
+          name: 'Hub Manager',
+          phone: '+91-98765-99999',
+          designation: 'Regional Distribution Head',
+          department: 'Supply Chain Management'
+        },
+        drivers: [
+          { name: 'Hub Driver 1', phone: '+91-90123-11111', vehicle: 'Heavy Truck PB-99-8888', capacity: '20 tonnes' },
+          { name: 'Hub Driver 2', phone: '+91-89012-22222', vehicle: 'Heavy Truck PB-99-9999', capacity: '25 tonnes' }
+        ],
+        alternativeContacts: [
+          { name: 'Regional Control Center', phone: '+91-87654-33333', type: 'Regional Operations' },
+          { name: 'Emergency Transport', phone: '+91-1800-999-8888', type: 'Emergency Contact' }
+        ]
+      }
     };
     setSelectedNetworkNode({ type: nodeType, ...enhancedNodeData });
     setShowNetworkDialog(true);
@@ -93,6 +141,51 @@ export default function SupplyChainMonitor() {
   const closeNetworkDialog = () => {
     setShowNetworkDialog(false);
     setSelectedNetworkNode(null);
+  };
+
+  const handleCancelRoute = async (routeId: string) => {
+    // Find the route to cancel
+    const route = selectedNetworkNode.routes.find((r: any) => r.id === routeId);
+    if (!route) return;
+
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to cancel the route: ${selectedNetworkNode.type === 'hub' ? `${route.from} → Hub` : 
+       selectedNetworkNode.type === 'mandi' ? `Farm → ${selectedNetworkNode.name}` :
+       `${selectedNetworkNode.name} → ${route.to}`}?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      // Update route status to cancelled
+      const updatedRoutes = selectedNetworkNode.routes.map((r: any) => 
+        r.id === routeId ? { ...r, status: 'cancelled' } : r
+      );
+      
+      setSelectedNetworkNode({
+        ...selectedNetworkNode,
+        routes: updatedRoutes
+      });
+
+      // Send notification to all drivers
+      console.log(`🚨 ROUTE CANCELLATION NOTIFICATION SENT TO ALL DRIVERS:`);
+      console.log(`Route ID: ${routeId}`);
+      console.log(`Route: ${selectedNetworkNode.type === 'hub' ? `${route.from} → Hub` : 
+       selectedNetworkNode.type === 'mandi' ? `Farm → ${selectedNetworkNode.name}` :
+       `${selectedNetworkNode.name} → ${route.to}`}`);
+      console.log(`Message: "Route has been cancelled. Please stop all operations and await further instructions."`);
+      
+      // Simulate sending notifications to drivers
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Show success message
+      alert(`Route cancelled successfully! All drivers have been notified.`);
+      
+    } catch (error) {
+      console.error('Error cancelling route:', error);
+      alert('Failed to cancel route. Please try again.');
+    }
   };
 
   const routes = [
@@ -195,23 +288,62 @@ export default function SupplyChainMonitor() {
 
       {/* Main Content */}
       <div className="p-8 max-w-7xl mx-auto space-y-6">
-        {/* Officer Guidance */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg p-5 shadow-sm">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <Info className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="text-sm text-blue-900 mb-1">Officer Question: "Will this containment unnecessarily stop trade?"</h3>
-              <p className="text-xs text-blue-900 leading-relaxed">
-                This monitor shows how disease containment affects agricultural logistics. <strong>Only high-risk logistics 
-                routes are restricted</strong> to maintain economic continuity. Green routes remain fully operational, red 
-                routes are temporarily restricted for safety, and alternate routes ensure market connectivity.
-              </p>
-            </div>
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm mb-6">
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setActiveTab('monitor')}
+              className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+                activeTab === 'monitor'
+                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Network className="w-4 h-4 inline mr-2" />
+              Supply Chain Monitor
+            </button>
+            <button
+              onClick={() => setActiveTab('shock-index')}
+              className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+                activeTab === 'shock-index'
+                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Shield className="w-4 h-4 inline mr-2" />
+              Shock Absorption Index
+            </button>
           </div>
         </div>
 
+        {/* Tab Content */}
+        {activeTab === 'monitor' ? (
+          <>
+            {/* Officer Guidance */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg p-5 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Info className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm text-blue-900 mb-1">Officer Question: &quot;Will this containment unnecessarily stop trade?&quot;</h3>
+                  <p className="text-xs text-blue-900 leading-relaxed">
+                    This monitor shows how disease containment affects agricultural logistics. <strong>Only high-risk logistics 
+                    routes are restricted</strong> to maintain economic continuity. Green routes remain fully operational, red 
+                    routes are temporarily restricted for safety, and alternate routes ensure market connectivity.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <SupplyChainShockIndex />
+        )}
+      </div>
+
+      {/* Original Supply Chain Monitor Content */}
+      {activeTab === 'monitor' && (
+        <>
         {/* Stats Grid */}
         <div className="grid grid-cols-4 gap-4">
           {stats.map((stat, index) => (
@@ -480,7 +612,8 @@ export default function SupplyChainMonitor() {
             </div>
           </div>
         </div>
-      </div>
+        </>
+      )}
 
       {/* Route Details Dialog */}
       {showRouteDialog && selectedRouteDetails && (
@@ -571,6 +704,33 @@ export default function SupplyChainMonitor() {
                   <h4 className="text-sm font-semibold text-blue-900">Status Reason</h4>
                 </div>
                 <p className="text-sm text-blue-900 leading-relaxed">{selectedRouteDetails.reason}</p>
+              </div>
+
+              {/* Transport Contacts */}
+              <div className="bg-amber-50 rounded-lg p-4 mb-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Phone className="w-4 h-4 text-amber-600" />
+                  <h4 className="text-sm font-semibold text-amber-900">Transport Contacts</h4>
+                </div>
+                <div className="space-y-3">
+                  <div className="bg-white/70 rounded-lg p-3">
+                    <div className="text-xs font-semibold text-gray-900 mb-1">Route Coordinator</div>
+                    <div className="text-xs text-gray-700">
+                      <div className="font-medium">Contact: +91-98765-ROUTE</div>
+                      <div>Available 24/7 for route assistance</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button className="bg-white/70 border border-amber-300 rounded-lg py-2 px-3 text-xs font-medium hover:bg-white transition-colors" title="Call Support" aria-label="Call Support">
+                      <Phone className="w-3 h-3 inline mr-1" />
+                      Call Support
+                    </button>
+                    <button className="bg-white/70 border border-amber-300 rounded-lg py-2 px-3 text-xs font-medium hover:bg-white transition-colors" title="Send Alert" aria-label="Send Alert">
+                      <MessageCircle className="w-3 h-3 inline mr-1" />
+                      Send Alert
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -673,6 +833,64 @@ export default function SupplyChainMonitor() {
                 </div>
               </div>
 
+              {/* Transport Contacts Section */}
+              {selectedNetworkNode.transportContacts && (
+                <div className="bg-amber-50 p-2 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Phone className="w-4 h-4 text-amber-600" />
+                    <h4 className="text-sm font-semibold text-amber-900">Transport Contacts</h4>
+                  </div>
+                  
+                  {/* Coordinator */}
+                  <div className="bg-white/70 rounded-lg p-2 mb-2">
+                    <div className="text-xs font-semibold text-gray-900 mb-1">👨‍💼 Coordinator</div>
+                    <div className="text-xs">
+                      <div><strong>{selectedNetworkNode.transportContacts.coordinator.name}</strong></div>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Phone className="w-3 h-3" />
+                        <span>{selectedNetworkNode.transportContacts.coordinator.phone}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Driver - Only One */}
+                  <div className="bg-white/70 rounded-lg p-2 mb-2">
+                    <div className="text-xs font-semibold text-gray-900 mb-1">🚛 Driver</div>
+                    <div className="text-xs">
+                      <div><strong>{selectedNetworkNode.transportContacts.drivers[0].name}</strong></div>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Phone className="w-3 h-3" />
+                        <span>{selectedNetworkNode.transportContacts.drivers[0].phone}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Emergency Contact - Only One */}
+                  <div className="bg-white/70 rounded-lg p-2 mb-2">
+                    <div className="text-xs font-semibold text-gray-900 mb-1">📞 Emergency</div>
+                    <div className="text-xs">
+                      <div><strong>{selectedNetworkNode.transportContacts.alternativeContacts[0].name}</strong></div>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Phone className="w-3 h-3" />
+                        <span>{selectedNetworkNode.transportContacts.alternativeContacts[0].phone}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <button className="bg-white/70 border border-amber-300 rounded-lg py-1 px-2 text-xs font-medium hover:bg-white transition-colors" title="Call" aria-label="Call">
+                      <Phone className="w-3 h-3 inline mr-1" />
+                      Call
+                    </button>
+                    <button className="bg-white/70 border border-amber-300 rounded-lg py-1 px-2 text-xs font-medium hover:bg-white transition-colors" title="Alert" aria-label="Alert">
+                      <MessageCircle className="w-3 h-3 inline mr-1" />
+                      Alert
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Routes Information */}
               {selectedNetworkNode.routes && selectedNetworkNode.routes.length > 0 && (
                 <div className="bg-blue-50 p-3 mb-4">
@@ -698,7 +916,7 @@ export default function SupplyChainMonitor() {
                             </div>
                           </div>
                         </div>
-                        <div className="text-right">
+                        <div className="flex items-center gap-2">
                           <div className={`px-2 py-1 text-xs font-medium ${
                             route.status === 'operational' ? 'bg-green-100 text-green-700' :
                             route.status === 'restricted' ? 'bg-red-100 text-red-700' :
@@ -708,6 +926,15 @@ export default function SupplyChainMonitor() {
                              route.status === 'restricted' ? 'Restricted' :
                              'Monitoring'}
                           </div>
+                          {route.status === 'operational' && (
+                            <button
+                              onClick={() => handleCancelRoute(route.id)}
+                              className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors flex items-center gap-1"
+                            >
+                              <X className="w-3 h-3" />
+                              Cancel
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}

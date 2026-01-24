@@ -14,6 +14,7 @@ from unified_analysis import unified_crop_analysis
 from containment_engine import containment_engine
 from pdf_generator import pdf_generator
 from historical_analysis import historical_engine
+from village_analysis import village_engine
 
 app = FastAPI(
     title="AgriPulseX Advanced Agricultural Intelligence",
@@ -27,8 +28,15 @@ app = FastAPI(
 # Get allowed origins from environment or use defaults
 allowed_origins = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000", 
+    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
+    "http://localhost:3002",
+    "http://127.0.0.1:3002",
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:52582",
+    "http://127.0.0.1:52582",
     "https://695f974bdcf643fdd3303f75--brilliant-quokka-863185.netlify.app",
     "https://brilliant-quokka-863185.netlify.app"
 ]
@@ -514,9 +522,123 @@ def get_system_info():
             "pdf_report": "/api/v2/generate-pdf",
             "farmer_history": "/api/v2/farmer-history/{farmer_id}",
             "regional_summary": "/api/v2/region-summary/{region}",
-            "trend_analysis": "/api/v2/trend-analysis/{farmer_id}"
+            "trend_analysis": "/api/v2/trend-analysis/{farmer_id}",
+            "village_cluster_analysis": "/api/v2/analyze-village-cluster",
+            "village_database": "/api/v2/village-database"
         }
     }
+
+# ---- VILLAGE-LEVEL ANALYSIS ENDPOINTS ----
+
+@app.post("/api/v2/analyze-village-cluster")
+async def analyze_village_cluster(
+    file: UploadFile = File(...),
+    village_name: Optional[str] = Form(None, description="Village name for cluster analysis"),
+    crop_type: Optional[str] = Form(None, description="Primary crop type"),
+    field_area: Optional[str] = Form(None, description="Field area in hectares"),
+    region: Optional[str] = Form(None, description="Agricultural region")
+):
+    """
+    Village-level agricultural disease analysis with coordinated containment recommendations
+    
+    Features:
+    - Multi-farmer aggregation and risk scoring
+    - Village-level disease risk assessment
+    - Coordinated containment recommendations
+    - Policy trigger evaluation
+    - Market impact analysis
+    - Individual vs Community comparative analysis
+    
+    Supports decentralized agricultural governance and Ministry of Agriculture workflows
+    """
+    try:
+        # Validate file type
+        if not file.content_type.startswith('image/'):
+            raise HTTPException(status_code=400, detail="File must be an image")
+        
+        # Validate required village name
+        if not village_name:
+            raise HTTPException(status_code=400, detail="Village name is required for cluster analysis")
+        
+        # Read image bytes
+        image_bytes = await file.read()
+        
+        print(f"Received village cluster analysis request: {village_name}")
+        print(f"Image size: {len(image_bytes)} bytes")
+        
+        # Perform village-level analysis
+        try:
+            village_results = village_engine.analyze_village_cluster(
+                village_name=village_name,
+                image_data=image_bytes,
+                crop_type=crop_type,
+                region=region
+            )
+            
+            print(f"Village analysis completed for: {village_name}")
+            
+            # Create unified response format
+            unified_results = {
+                "analysis_id": f"VIL_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                "timestamp": datetime.now().isoformat(),
+                "assessment_scope": "village-cluster",
+                "village_name": village_name,
+                "region": region or "unknown",
+                "village_result": village_results,
+                "comparative_analysis": village_results.get("comparative_analysis", {}),
+                "analysis_metadata": village_results.get("analysis_metadata", {})
+            }
+            
+            # Store analysis in history (village-level tracking)
+            try:
+                historical_engine.store_analysis(unified_results)
+                print(f"Village analysis stored in history for: {village_name}")
+            except Exception as hist_error:
+                print(f"Warning: Failed to store village analysis in history: {hist_error}")
+            
+            return {
+                "success": True,
+                "data": unified_results,
+                "message": f"Village cluster analysis completed successfully for {village_name}"
+            }
+            
+        except Exception as village_error:
+            print(f"Village analysis failed: {type(village_error).__name__}: {str(village_error)}")
+            raise HTTPException(status_code=500, detail=f"Village analysis failed: {str(village_error)}")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Detailed error in village analysis: {type(e).__name__}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Village cluster analysis failed: {str(e)}")
+
+@app.get("/api/v2/village-database")
+async def get_village_database():
+    """
+    Get available villages for cluster analysis
+    Returns village database with farmer information and agricultural details
+    """
+    try:
+        return {
+            "success": True,
+            "data": {
+                "available_villages": list(village_engine.village_database.keys()),
+                "village_details": village_engine.village_database,
+                "total_villages": len(village_engine.village_database),
+                "supported_regions": ["Punjab", "Haryana", "Uttar Pradesh", "Bihar"],
+                "analysis_capabilities": {
+                    "multi_farmer_aggregation": True,
+                    "coordinated_containment": True,
+                    "policy_trigger_assessment": True,
+                    "market_impact_analysis": True,
+                    "comparative_analysis": True
+                }
+            },
+            "message": "Village database retrieved successfully"
+        }
+    except Exception as e:
+        print(f"Error retrieving village database: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve village database")
 
 if __name__ == "__main__":
     import uvicorn

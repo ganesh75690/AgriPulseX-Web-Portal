@@ -1,0 +1,13 @@
+[
+  {
+    "analysis_id": "ANA_20260111_214721",
+    "timestamp": "2026-01-11T21:47:21.668915",
+    "farmer_id": "test_farmer",
+    "region": "test_region",
+    "disease": "Healthy",
+    "severity": "Low",
+    "confidence": "90%",
+    "severity_score": 1,
+    "confidence_numeric": 90
+  }
+]

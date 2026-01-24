@@ -1,0 +1,13 @@
+[
+  {
+    "analysis_id": "ANA_20260112_151420",
+    "timestamp": "2026-01-12T15:14:20.935037",
+    "farmer_id": "FARMERFVF",
+    "region": "andhra pradesh",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
+  }
+]

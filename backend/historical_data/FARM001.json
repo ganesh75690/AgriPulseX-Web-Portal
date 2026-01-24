@@ -9,5 +9,16 @@
     "confidence": "84%",
     "severity_score": 3,
     "confidence_numeric": 84
+  },
+  {
+    "analysis_id": "ANA_20260112_113954",
+    "timestamp": "2026-01-12T11:39:54.350086",
+    "farmer_id": "FARM001",
+    "region": "Andhra Pradesh",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "73%",
+    "severity_score": 1,
+    "confidence_numeric": 73
   }
 ]

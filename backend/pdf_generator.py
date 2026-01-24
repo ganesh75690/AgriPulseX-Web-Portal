@@ -202,34 +202,79 @@ class AgriculturalReportGenerator:
         
         # Convert images to usable format
         original_image = io.BytesIO(original_image_bytes)
+        original_image.seek(0)  # Reset position to beginning
         
-        # Decode heatmap from base64
-        heatmap_data = base64.b64decode(data['image_analysis']['heatmap'])
+        # Decode heatmap from base64 - handle data URL format
+        heatmap_base64 = data['image_analysis']['heatmap']
+        if heatmap_base64.startswith('data:image'):
+            # Remove data URL prefix
+            heatmap_base64 = heatmap_base64.split(',')[1]
+        
+        heatmap_data = base64.b64decode(heatmap_base64)
         heatmap_image = io.BytesIO(heatmap_data)
+        heatmap_image.seek(0)  # Reset position to beginning
         
-        # Create image comparison table
-        image_table_data = [
-            [
-                Paragraph("Original Image", self.styles['ReportText']),
-                Paragraph("Infection Heatmap", self.styles['ReportText'])
-            ],
-            [
-                Image(original_image, width=3*inch, height=2.5*inch),
-                Image(heatmap_image, width=3*inch, height=2.5*inch)
+        # Validate images before using in ReportLab
+        try:
+            # Test if images can be read
+            from PIL import Image as PILImage
+            
+            # Reset positions before validation
+            original_image.seek(0)
+            heatmap_image.seek(0)
+            
+            # Validate original image
+            pil_original = PILImage.open(original_image)
+            pil_original.verify()  # Verify it's a valid image
+            original_image.seek(0)  # Reset after verification
+            
+            # Validate heatmap image
+            pil_heatmap = PILImage.open(heatmap_image)
+            pil_heatmap.verify()  # Verify it's a valid image
+            heatmap_image.seek(0)  # Reset after verification
+            
+            print("✓ Both images validated successfully for PDF generation")
+            
+        except Exception as img_error:
+            print(f"✗ Image validation error: {img_error}")
+            print(f"Original image size: {len(original_image_bytes)} bytes")
+            print(f"Heatmap base64 length: {len(heatmap_base64)}")
+            
+            # Skip images if they can't be validated
+            elements.append(Paragraph("Note: Images could not be processed for this report", self.styles['ReportText']))
+            elements.append(Paragraph(f"Error details: {str(img_error)}", self.styles['ReportText']))
+            return elements
+        
+        # Create image comparison table with error handling
+        try:
+            image_table_data = [
+                [
+                    Paragraph("Original Image", self.styles['ReportText']),
+                    Paragraph("Infection Heatmap", self.styles['ReportText'])
+                ],
+                [
+                    Image(original_image, width=3*inch, height=2.5*inch),
+                    Image(heatmap_image, width=3*inch, height=2.5*inch)
+                ]
             ]
-        ]
-        
-        image_table = Table(image_table_data, colWidths=[3.5*inch, 3.5*inch])
-        image_table.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 11),
-            ('LINEBELOW', (0, 0), (-1, 0), 1, HexColor('#34495E')),
-            ('PADDING', (0, 0), (-1, -1), 10),
-            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#ECF0F1'))
-        ]))
-        
-        elements.append(image_table)
+            
+            image_table = Table(image_table_data, colWidths=[3.5*inch, 3.5*inch])
+            image_table.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 11),
+                ('LINEBELOW', (0, 0), (-1, 0), 1, HexColor('#34495E')),
+                ('PADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (-1, 0), HexColor('#ECF0F1'))
+            ]))
+            
+            elements.append(image_table)
+            print("✓ Image table created successfully")
+            
+        except Exception as table_error:
+            print(f"✗ Image table creation failed: {table_error}")
+            elements.append(Paragraph("Images could not be embedded in this report", self.styles['ReportText']))
+            elements.append(Paragraph(f"Table error: {str(table_error)}", self.styles['ReportText']))
         elements.append(Spacer(1, 15))
         
         # Image analysis explanation

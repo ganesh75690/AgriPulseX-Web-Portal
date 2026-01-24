@@ -1,0 +1,68 @@
+[
+  {
+    "analysis_id": "ANA_20260114_211222",
+    "timestamp": "2026-01-14T21:12:22.853655",
+    "farmer_id": "123321",
+    "region": "Amritsar",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
+  },
+  {
+    "analysis_id": "ANA_20260114_211528",
+    "timestamp": "2026-01-14T21:15:28.123784",
+    "farmer_id": "123321",
+    "region": "Amritsar",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
+  },
+  {
+    "analysis_id": "ANA_20260114_211848",
+    "timestamp": "2026-01-14T21:18:48.548863",
+    "farmer_id": "123321",
+    "region": "Amritsar",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
+  },
+  {
+    "analysis_id": "ANA_20260114_211916",
+    "timestamp": "2026-01-14T21:19:16.086500",
+    "farmer_id": "123321",
+    "region": "Amritsar",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
+  },
+  {
+    "analysis_id": "ANA_20260114_212021",
+    "timestamp": "2026-01-14T21:20:21.920962",
+    "farmer_id": "123321",
+    "region": "Amritsar",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
+  },
+  {
+    "analysis_id": "ANA_20260114_212746",
+    "timestamp": "2026-01-14T21:27:46.783668",
+    "farmer_id": "123321",
+    "region": "Amritsar",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "65%",
+    "severity_score": 1,
+    "confidence_numeric": 65
+  }
+]

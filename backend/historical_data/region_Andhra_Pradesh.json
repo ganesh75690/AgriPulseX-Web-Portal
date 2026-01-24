@@ -9,5 +9,38 @@
     "confidence": "84%",
     "severity_score": 3,
     "confidence_numeric": 84
+  },
+  {
+    "analysis_id": "ANA_20260112_113954",
+    "timestamp": "2026-01-12T11:39:54.350086",
+    "farmer_id": "FARM001",
+    "region": "Andhra Pradesh",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "73%",
+    "severity_score": 1,
+    "confidence_numeric": 73
+  },
+  {
+    "analysis_id": "ANA_20260112_151420",
+    "timestamp": "2026-01-12T15:14:20.935037",
+    "farmer_id": "FARMERFVF",
+    "region": "andhra pradesh",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
+  },
+  {
+    "analysis_id": "ANA_20260112_170458",
+    "timestamp": "2026-01-12T17:04:58.297796",
+    "farmer_id": "FARM004",
+    "region": "Andhra Pradesh",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "64%",
+    "severity_score": 1,
+    "confidence_numeric": 64
   }
 ]

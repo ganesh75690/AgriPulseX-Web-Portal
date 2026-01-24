@@ -185,86 +185,81 @@ def analyze_spatial_distribution(yellow_mask, brown_mask):
 
 def analyze_image_optimized(image_bytes):
     """
-    Optimized image analysis with single-pass processing
+    Highly optimized image analysis with minimal processing
     """
-    # --- Load and resize image once ---
-    # Convert bytes to BytesIO for PIL
+    import time
+    start_time = time.time()
+    
+    # --- Fast image loading and resizing ---
     if isinstance(image_bytes, bytes):
         image_bytes = io.BytesIO(image_bytes)
     
+    # Use PIL for faster loading and direct resizing
     image = Image.open(image_bytes).convert("RGB")
-    original_size = image.size
-    img = np.array(image.resize((224, 224)))
+    img = np.array(image.resize((224, 224)))  # Resize in one step
     
-    # --- Single HSV conversion ---
+    # --- Optimized single-pass processing ---
     hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
     
-    # --- Optimized color masks ---
+    # Vectorized mask creation - batch operations
     yellow_mask = cv2.inRange(hsv, (20, 100, 100), (35, 255, 255))
     brown_mask = cv2.inRange(hsv, (10, 50, 20), (20, 200, 200))
     green_mask = cv2.inRange(hsv, (36, 50, 50), (85, 255, 255))
     
-    total_pixels = img.shape[0] * img.shape[1]
+    total_pixels = 224 * 224  # Fixed size for faster calculation
     
-    # --- Vectorized percentage calculations ---
-    yellow_pct = (np.count_nonzero(yellow_mask) / total_pixels) * 100
-    brown_pct = (np.count_nonzero(brown_mask) / total_pixels) * 100
-    green_pct = (np.count_nonzero(green_mask) / total_pixels) * 100
+    # --- Optimized calculations using numpy operations ---
+    yellow_count = np.count_nonzero(yellow_mask)
+    brown_count = np.count_nonzero(brown_mask)
+    green_count = np.count_nonzero(green_mask)
     
-    # --- Simplified edge detection ---
+    yellow_pct = (yellow_count / total_pixels) * 100
+    brown_pct = (brown_count / total_pixels) * 100
+    green_pct = (green_count / total_pixels) * 100
+    
+    # --- Simplified edge detection only if needed ---
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     edges = cv2.Canny(gray, 80, 160)
     edge_density = (np.count_nonzero(edges) / total_pixels) * 100
     
-    # --- Disease logic ---
-    if yellow_pct > 18 and edge_density > 5:
-        disease = "Early Blight"
-        base_confidence = 75
+    # --- Fast disease classification ---
+    if green_pct > 70:
+        disease = "Healthy"
+        base_confidence = 90
+        severity = "Low"
     elif brown_pct > 12:
         disease = "Late Blight"
         base_confidence = 82
-    elif green_pct > 70:
-        disease = "Healthy"
-        base_confidence = 90
+        severity = "High" if brown_pct > 20 else "Medium"
+    elif yellow_pct > 18:
+        disease = "Early Blight"
+        base_confidence = 75
+        severity = "Medium" if yellow_pct > 25 else "Low"
     else:
         disease = "Unknown Stress"
         base_confidence = 60
-    
-    # --- Severity estimation ---
-    affected_area = yellow_pct + brown_pct
-    
-    if affected_area < 10:
         severity = "Low"
-    elif affected_area < 25:
-        severity = "Medium"
-    else:
-        severity = "High"
     
-    # --- Confidence refinement ---
-    confidence = min(base_confidence + (edge_density * 0.6), 98)
+    # --- Quick confidence calculation ---
+    confidence = min(base_confidence + (edge_density * 0.5), 95)
     
-    # --- AI Explanation ---
-    explanation = (
-        f"Detected {round(affected_area,1)}% abnormal leaf coloration with "
-        f"{round(edge_density,1)}% texture irregularities. "
-        f"Pattern aligns with {disease} indicators."
-    )
+    # --- Simple explanation ---
+    explanation = f"Analysis shows {disease} with {int(confidence)}% confidence. Affected area: {round(yellow_pct + brown_pct, 1)}%."
     
-    # --- Generate explainable heatmap in parallel ---
-    # Pass the original bytes (not BytesIO) to heatmap function
+    # --- Fast heatmap generation without complex analysis ---
     original_bytes = image_bytes.getvalue() if hasattr(image_bytes, 'getvalue') else image_bytes
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        heatmap_future = executor.submit(generate_explainable_heatmap, original_bytes, yellow_mask, brown_mask, edges)
-        heatmap_result = heatmap_future.result()
+    heatmap_base64 = generate_heatmap_optimized(original_bytes, yellow_mask, brown_mask, edges)
+    
+    processing_time = time.time() - start_time
+    print(f"Image analysis completed in {processing_time:.2f}s")
     
     return {
         "disease": disease,
         "confidence": f"{int(confidence)}%",
         "severity": severity,
         "explanation": explanation,
-        "heatmap": heatmap_result["heatmap_base64"],
-        "explainable_analysis": heatmap_result["analysis"],
-        "heatmap_overlay": heatmap_result["overlay_path"]
+        "heatmap": heatmap_base64,
+        "processing_time": f"{processing_time:.2f}s"
     }
 
 def analyze_image(image_bytes):

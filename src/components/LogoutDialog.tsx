@@ -10,17 +10,29 @@ export default function LogoutDialog({ onLogout, children }: LogoutDialogProps) 
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
+    console.log('LogoutDialog: handleLogout called');
     setIsOpen(false);
+    
+    // Rotate login background image immediately when logout is confirmed
+    const currentImageIndex = localStorage.getItem('loginImageIndex');
+    const nextIndex = currentImageIndex ? (parseInt(currentImageIndex) + 1) % 2 : 0;
+    localStorage.setItem('loginImageIndex', nextIndex.toString());
+    
+    // Add a small delay to show the logout confirmation
     setTimeout(() => {
+      console.log('LogoutDialog: calling onLogout callback');
       onLogout();
-    }, 100);
+    }, 300);
   };
 
   return (
     <>
       {/* Trigger Button */}
       {children ? (
-        <div onClick={() => setIsOpen(true)}>
+        <div onClick={() => {
+          console.log('LogoutDialog: Trigger button clicked');
+          setIsOpen(true);
+        }}>
           {children}
         </div>
       ) : (

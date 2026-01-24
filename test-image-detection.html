@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Image Detection</title>
+</head>
+<body>
+    <h1>Test Image Detection</h1>
+    <input type="file" id="imageFile" accept="image/*">
+    <button onclick="testImageDetection()">Test Detection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testImageDetection() {
+            const fileInput = document.getElementById('imageFile');
+            const resultDiv = document.getElementById('result');
+            
+            if (!fileInput.files[0]) {
+                resultDiv.innerHTML = '<p style="color: red;">Please select an image file</p>';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('farmer_id', 'test_farmer');
+            formData.append('region', 'Punjab');
+            
+            resultDiv.innerHTML = 'Testing image detection...';
+            
+            try {
+                const response = await fetch('http://localhost:8001/api/v2/analyze-image', {
+                    method: 'POST',
+                    body: formData,
+                    // Don't set Content-Type header for FormData - browser sets it automatically with boundary
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<h3>Success!</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<h3>Error!</h3><p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

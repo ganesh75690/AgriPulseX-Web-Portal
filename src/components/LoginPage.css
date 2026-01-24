@@ -1,0 +1,31 @@
+/* LoginPage Component Styles */
+
+/* Background image container */
+.login-background {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 0.5s ease-in-out;
+}
+
+/* Specific background image classes */
+.login-background.agri-bg {
+  background-image: url('/agri.jpg');
+}
+
+.login-background.agrifield-bg {
+  background-image: url('/AGRIFIELD.jpg');
+}
+
+/* High contrast mode */
+.login-background.high-contrast {
+  filter: contrast(1.5) brightness(1.2);
+}
+
+/* AgriPulseX title styling */
+.login-title {
+  font-size: 4rem;
+  font-weight: bold;
+  -webkit-text-stroke: 2px black;
+  text-shadow: 2px 2px 0 black, -2px 2px 0 black, 2px -2px 0 black, -2px -2px 0 black;
+}

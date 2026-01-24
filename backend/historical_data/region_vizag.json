@@ -1,0 +1,24 @@
+[
+  {
+    "analysis_id": "ANA_20260117_205115",
+    "timestamp": "2026-01-17T20:51:15.050104",
+    "farmer_id": "123456",
+    "region": "vizag",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "65%",
+    "severity_score": 1,
+    "confidence_numeric": 65
+  },
+  {
+    "analysis_id": "ANA_20260117_205210",
+    "timestamp": "2026-01-17T20:52:10.431767",
+    "farmer_id": "123456",
+    "region": "vizag",
+    "disease": "Unknown Stress",
+    "severity": "Low",
+    "confidence": "65%",
+    "severity_score": 1,
+    "confidence_numeric": 65
+  }
+]

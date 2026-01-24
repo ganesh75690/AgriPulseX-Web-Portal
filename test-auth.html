@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Authentication</title>
+</head>
+<body>
+    <h1>Authentication Test</h1>
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="testAuth()">Test Auth Status</button>
+    <button onclick="testSubmit()">Test Report Submission</button>
+    <div id="result"></div>
+
+    <script>
+        async function testLogin() {
+            try {
+                const response = await fetch('http://localhost:8000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'field@agri.gov.in',
+                        password: 'field123'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Login response:', data);
+                
+                if (response.ok) {
+                    localStorage.setItem('agripulse_token', data.token);
+                    document.getElementById('result').innerHTML = '✅ Login successful! Token saved.';
+                } else {
+                    document.getElementById('result').innerHTML = '❌ Login failed: ' + data.detail;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = '❌ Error: ' + error.message;
+            }
+        }
+
+        async function testAuth() {
+            const token = localStorage.getItem('agripulse_token');
+            document.getElementById('result').innerHTML = 'Token: ' + (token || 'None');
+        }
+
+        async function testSubmit() {
+            const token = localStorage.getItem('agripulse_token');
+            if (!token) {
+                document.getElementById('result').innerHTML = '❌ No token found. Please login first.';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8000/api/reports', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        farmer_name: 'Test Farmer',
+                        farmer_id: 'test_123',
+                        village: 'Test Village',
+                        district: 'Test District',
+                        crop_type: 'Wheat',
+                        disease: 'Leaf Rust',
+                        confidence: 75,
+                        severity: 'Medium',
+                        image_url: '',
+                        submitted_by: 'Field Employee'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Submit response:', data);
+                
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = '✅ Report submitted successfully!';
+                } else {
+                    document.getElementById('result').innerHTML = '❌ Submit failed: ' + data.detail;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = '❌ Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

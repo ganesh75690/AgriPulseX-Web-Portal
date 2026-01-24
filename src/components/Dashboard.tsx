@@ -1,15 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, TrendingUp, Activity, Users, MapPin, ArrowRight, CheckCircle, AlertCircle, XCircle, Eye, Network, Camera, Zap } from 'lucide-react';
+import { AlertTriangle, Activity, MapPin, ArrowRight, CheckCircle, AlertCircle, Eye, Network, Camera, Zap, FileText } from 'lucide-react';
+import ActionReadinessIndicator, { ARIInputs } from './ActionReadinessIndicator';
 
 interface DashboardProps {
   onNavigateToContainment: () => void;
   onNavigateToVisual: () => void;
   onNavigateToSupplyChain: () => void;
   onNavigateToImageDetection: () => void;
+  onNavigateToEnhancedImageDetection: () => void;
+  onNavigateToEnhancedAnalysis: () => void;
+  onNavigateToRiskTable: () => void;
+  onNavigateToFieldReportsInbox: () => void;
 }
 
-export default function Dashboard({ onNavigateToContainment, onNavigateToVisual, onNavigateToSupplyChain, onNavigateToImageDetection }: DashboardProps) {
+export default function Dashboard({ onNavigateToContainment, onNavigateToVisual, onNavigateToSupplyChain, onNavigateToImageDetection, onNavigateToEnhancedImageDetection, onNavigateToEnhancedAnalysis, onNavigateToRiskTable, onNavigateToFieldReportsInbox }: DashboardProps) {
   const [countersVisible, setCountersVisible] = useState(false);
+  const [ariInputs] = useState<ARIInputs>({
+    diseaseSeverityScore: 0.75,
+    fieldReportConfidenceScore: 0.87,
+    independentReportsCount: 3,
+    imageQualityScore: 0.82,
+    villageClusteringStrength: 0.65
+  });
 
   useEffect(() => {
     setTimeout(() => setCountersVisible(true), 300);
@@ -74,7 +86,7 @@ export default function Dashboard({ onNavigateToContainment, onNavigateToVisual,
                 <Activity className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl text-gray-900">National Dashboard Overview</h1>
+                <h1 className="text-2xl text-gray-900">Dashboard Overview</h1>
                 <p className="text-sm text-gray-600 mt-1">
                   Real-time crop risk situation awareness across India
                 </p>
@@ -106,17 +118,20 @@ export default function Dashboard({ onNavigateToContainment, onNavigateToVisual,
             return (
               <div
                 key={index}
-                className={`bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden transition-all hover:shadow-lg ${countersVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                className={`bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden transition-all hover:shadow-xl cursor-pointer hover:scale-[1.03] group ${countersVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className={`w-12 h-12 bg-gradient-to-br ${metric.color} rounded-xl flex items-center justify-center shadow-md`}>
+                    <div className={`w-12 h-12 bg-gradient-to-br ${metric.color} rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                   </div>
-                  <div className="text-4xl text-gray-900 mb-2">{metric.value}</div>
+                  <div className="text-4xl text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{metric.value}</div>
                   <div className="text-xs text-gray-600">{metric.label}</div>
+                  <div className="mt-3 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Click for details →
+                  </div>
                 </div>
                 <div className={`h-1 bg-gradient-to-r ${metric.color}`}></div>
               </div>
@@ -124,27 +139,105 @@ export default function Dashboard({ onNavigateToContainment, onNavigateToVisual,
           })}
         </div>
 
+        {/* Officer Personal Statistics */}
+        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200 shadow-sm">
+          <div className="px-6 py-4 border-b-2 border-purple-200">
+            <h2 className="text-gray-900 flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-purple-600" />
+              Your Performance Statistics
+            </h2>
+            <p className="text-xs text-purple-700 mt-1">Your contribution to agricultural disease management</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-purple-900 mb-1">89</div>
+                <div className="text-xs text-gray-600">Reports Solved</div>
+                <div className="text-xs text-green-600 mt-1">+12% this month</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-900 mb-1">156</div>
+                <div className="text-xs text-gray-600">Cases Reviewed</div>
+                <div className="text-xs text-green-600 mt-1">+8% this month</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-900 mb-1">94.2%</div>
+                <div className="text-xs text-gray-600">Accuracy Rate</div>
+                <div className="text-xs text-green-600 mt-1">+3.1% this month</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-amber-900 mb-1">4.8/5</div>
+                <div className="text-xs text-gray-600">Farmer Rating</div>
+                <div className="text-xs text-green-600 mt-1">+0.3 this month</div>
+              </div>
+            </div>
+            
+            {/* Performance Trend */}
+            <div className="mt-6 grid grid-cols-3 gap-4">
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <div className="text-xs text-gray-600 mb-2">Response Time</div>
+                <div className="text-lg font-semibold text-gray-900">2.3 hrs</div>
+                <div className="text-xs text-green-600">↓ 15% faster</div>
+              </div>
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <div className="text-xs text-gray-600 mb-2">Daily Average</div>
+                <div className="text-lg font-semibold text-gray-900">5.2 cases</div>
+                <div className="text-xs text-green-600">↑ 0.8 cases</div>
+              </div>
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <div className="text-xs text-gray-600 mb-2">Success Rate</div>
+                <div className="text-lg font-semibold text-gray-900">98.7%</div>
+                <div className="text-xs text-green-600">↑ 1.2%</div>
+              </div>
+            </div>
+
+            {/* Recent Achievement */}
+            <div className="mt-4 p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg border border-yellow-200">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-amber-900">🏆 Outstanding Performance</div>
+                  <div className="text-xs text-amber-700">You've resolved 89 cases this month with 94.2% accuracy!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Two Column Layout */}
         <div className="grid grid-cols-2 gap-6">
           {/* Active Advisories */}
           <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm">
             <div className="bg-gradient-to-r from-red-50 to-orange-50 px-6 py-4 border-b-2 border-red-200">
-              <h2 className="text-gray-900 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
-                Active Containment Advisories
-              </h2>
-              <p className="text-xs text-red-700 mt-1">Require officer review and decision</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-gray-900 flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                    Active Containment Advisories
+                  </h2>
+                  <p className="text-xs text-red-700 mt-1">Require officer review and decision</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <ActionReadinessIndicator 
+                    inputs={ariInputs}
+                    compact={true}
+                  />
+                </div>
+              </div>
             </div>
             <div className="p-6">
               <div className="space-y-3">
                 {activeAdvisories.map((advisory, index) => (
                   <div
                     key={index}
-                    className="p-4 bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all cursor-pointer"
+                    onClick={() => onNavigateToContainment()}
+                    className="p-4 bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all cursor-pointer hover:scale-[1.02] group"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <div className="text-sm text-gray-900 mb-1">{advisory.region}</div>
+                        <div className="text-sm text-gray-900 mb-1 group-hover:text-blue-800 transition-colors">{advisory.region}</div>
                         <div className="text-xs text-gray-600">{advisory.disease}</div>
                       </div>
                       <span className={`text-xs px-3 py-1 rounded-full ${
@@ -157,14 +250,17 @@ export default function Dashboard({ onNavigateToContainment, onNavigateToVisual,
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="text-xs text-gray-500">Active since {advisory.since}</div>
-                      <div className="text-xs text-blue-600">Confidence: {advisory.confidence}%</div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-xs text-blue-600">Confidence: {advisory.confidence}%</div>
+                        <ArrowRight className="w-3 h-3 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
               <button
                 onClick={onNavigateToContainment}
-                className="w-full mt-4 flex items-center justify-center gap-2 text-white bg-gradient-to-r from-blue-600 to-blue-700 text-sm py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-md"
+                className="w-full mt-4 flex items-center justify-center gap-2 text-white bg-gradient-to-r from-blue-600 to-blue-700 text-sm py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg hover:scale-[1.02]"
               >
                 <span>View Containment Control Room</span>
                 <ArrowRight className="w-4 h-4" />
@@ -232,9 +328,15 @@ export default function Dashboard({ onNavigateToContainment, onNavigateToVisual,
                 { zone: 'West', status: 'Monitoring', color: 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-300 text-yellow-900' },
                 { zone: 'Central', status: 'Normal', color: 'bg-gradient-to-br from-green-50 to-green-100 border-green-300 text-green-900' }
               ].map((zone, index) => (
-                <div key={index} className={`p-6 rounded-xl border-2 ${zone.color} text-center shadow-sm hover:shadow-md transition-shadow`}>
-                  <div className="text-sm mb-2">{zone.zone}</div>
+                <div 
+                  key={index} 
+                  className={`p-6 rounded-xl border-2 ${zone.color} text-center shadow-sm hover:shadow-md transition-all cursor-pointer hover:scale-[1.05] group`}
+                >
+                  <div className="text-sm mb-2 font-semibold group-hover:scale-110 transition-transform">{zone.zone}</div>
                   <div className="text-xs">{zone.status}</div>
+                  <div className="mt-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                    Click for details →
+                  </div>
                 </div>
               ))}
             </div>
@@ -242,67 +344,144 @@ export default function Dashboard({ onNavigateToContainment, onNavigateToVisual,
         </div>
 
         {/* Quick Access Tools */}
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-6 gap-6">
           <div 
-            onClick={onNavigateToVisual}
-            className="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer"
+            onClick={onNavigateToFieldReportsInbox}
+            className="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer hover:scale-105 hover:from-orange-100 hover:to-orange-200 group"
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center shadow-md">
+              <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm text-orange-900 mb-1 font-semibold group-hover:text-orange-800">Field Reports Inbox</h3>
+                <p className="text-xs text-orange-800">Review submitted reports</p>
+                <div className="mt-2 text-xs text-orange-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                  3 new reports pending
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div 
+            onClick={onNavigateToVisual}
+            className="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer hover:scale-105 hover:from-purple-100 hover:to-purple-200 group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all">
                 <Eye className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <h3 className="text-sm text-purple-900 mb-1">Visual Intelligence</h3>
+              <div className="flex-1">
+                <h3 className="text-sm text-purple-900 mb-1 font-semibold group-hover:text-purple-800">Visual Intelligence</h3>
                 <p className="text-xs text-purple-800">Advanced risk visualizations</p>
+                <div className="mt-2 text-xs text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Interactive maps & heatmaps
+                </div>
               </div>
             </div>
           </div>
 
           <div 
             onClick={onNavigateToSupplyChain}
-            className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer"
+            className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer hover:scale-105 hover:from-indigo-100 hover:to-indigo-200 group"
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center shadow-md">
+              <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all">
                 <Network className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <h3 className="text-sm text-indigo-900 mb-1">Supply Chain Monitor</h3>
+              <div className="flex-1">
+                <h3 className="text-sm text-indigo-900 mb-1 font-semibold group-hover:text-indigo-800">Supply Chain Monitor</h3>
                 <p className="text-xs text-indigo-800">Logistics network tracking</p>
+                <div className="mt-2 text-xs text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Real-time supply flow analysis
+                </div>
               </div>
             </div>
           </div>
 
           <div 
             onClick={onNavigateToImageDetection}
-            className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer"
+            className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer hover:scale-105 hover:from-blue-100 hover:to-blue-200 group"
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-md">
+              <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all">
                 <Camera className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <h3 className="text-sm text-blue-900 mb-1">Image Detection</h3>
+              <div className="flex-1">
+                <h3 className="text-sm text-blue-900 mb-1 font-semibold group-hover:text-blue-800">Image Detection</h3>
                 <p className="text-xs text-blue-800">AI-assisted field analysis</p>
+                <div className="mt-2 text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Individual farmer analysis
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div 
+            onClick={onNavigateToEnhancedAnalysis}
+            className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer hover:scale-105 hover:from-green-100 hover:to-green-200 group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm text-green-900 mb-1 font-semibold group-hover:text-green-800">Enhanced Analysis</h3>
+                <p className="text-xs text-green-800">Village-level intelligence</p>
+                <div className="mt-2 text-xs text-green-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Multi-farmer coordination
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div 
+            onClick={onNavigateToRiskTable}
+            className="bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer hover:scale-105 hover:from-red-100 hover:to-red-200 group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all">
+                <AlertTriangle className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm text-red-900 mb-1 font-semibold group-hover:text-red-800">Risk Priority Table</h3>
+                <p className="text-xs text-red-800">National disease ranking</p>
+                <div className="mt-2 text-xs text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Government priority system
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* System Advisory */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all group">
           <div className="p-5">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                 <Zap className="w-5 h-5 text-blue-600" />
               </div>
-              <div>
-                <h3 className="text-sm text-blue-900 mb-1">System Advisory: Real-Time Intelligence</h3>
-                <p className="text-xs text-blue-900 leading-relaxed">
+              <div className="flex-1">
+                <h3 className="text-sm text-blue-900 mb-1 font-semibold group-hover:text-blue-800">System Advisory: Real-Time Intelligence</h3>
+                <p className="text-xs text-blue-900 leading-relaxed mb-3">
                   All metrics are updated in real-time from field monitoring stations and supply-chain integration points. 
                   Containment recommendations are AI-assisted but require officer approval. For detailed decision support 
                   and risk analysis, navigate to the Containment Control Room or Visual Intelligence sections.
                 </p>
+                <div className="flex gap-3 text-xs">
+                  <div className="flex items-center gap-1.5 bg-green-100 text-green-700 px-3 py-1.5 rounded-full">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>Live Data</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                    <span>AI Enhanced</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full">
+                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                    <span>Gov Approved</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

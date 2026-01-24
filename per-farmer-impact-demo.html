@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Per-Farmer Impact Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Per-Farmer Impact Calculator</h1>
+        
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">How IRL Works for Individual Farmers</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-900 mb-2">🎯 The Problem You Identified</h3>
+                    <p class="text-blue-800">Original IRL only showed regional impact (₹124L total loss) but didn't tell farmers: <strong>"How much will <em>I</em> lose?"</strong></p>
+                </div>
+                
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-900 mb-2">✅ The Solution</h3>
+                    <p class="text-green-800">Enhanced IRL now shows <strong>per-farmer impact</strong> based on:</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-green-700">
+                        <li>Total regional loss ÷ Number of affected farms</li>
+                        <li>Percentage of average annual income (₹2.5L)</li>
+                        <li>Individual farmer distress level</li>
+                        <li>Personalized recommendations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Example 1: Low Impact -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <div class="mb-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-green-100 text-green-800 border-green-200">
+                        <span class="font-semibold">Low Impact</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div>
+                        <div class="text-sm text-gray-600">Your Loss</div>
+                        <div class="text-2xl font-bold text-red-600">₹25,000</div>
+                        <div class="text-xs text-gray-500">10% of annual income</div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-sm text-gray-600">Your Saved Amount</div>
+                        <div class="text-xl font-bold text-green-600">₹50,000</div>
+                    </div>
+                    
+                    <div class="bg-green-50 rounded p-3">
+                        <div class="text-sm font-medium text-green-800">What you should do:</div>
+                        <ul class="text-xs text-green-700 mt-1 space-y-1">
+                            <li>• Continue standard farming</li>
+                            <li>• Monitor market prices</li>
+                            <li>• Keep insurance records</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example 2: Medium Impact -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <div class="mb-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-yellow-100 text-yellow-800 border-yellow-200">
+                        <span class="font-semibold">Medium Impact</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div>
+                        <div class="text-sm text-gray-600">Your Loss</div>
+                        <div class="text-2xl font-bold text-red-600">₹75,000</div>
+                        <div class="text-xs text-gray-500">30% of annual income</div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-sm text-gray-600">Your Saved Amount</div>
+                        <div class="text-xl font-bold text-green-600">₹40,000</div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 rounded p-3">
+                        <div class="text-sm font-medium text-yellow-800">What you should do:</div>
+                        <ul class="text-xs text-yellow-700 mt-1 space-y-1">
+                            <li>• Diversify crops next season</li>
+                            <li>• Store produce for better prices</li>
+                            <li>• Form farmer groups</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example 3: High Impact -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <div class="mb-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-red-100 text-red-800 border-red-200">
+                        <span class="font-semibold">High Impact</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div>
+                        <div class="text-sm text-gray-600">Your Loss</div>
+                        <div class="text-2xl font-bold text-red-600">₹1,50,000</div>
+                        <div class="text-xs text-gray-500">60% of annual income</div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-sm text-gray-600">Your Saved Amount</div>
+                        <div class="text-xl font-bold text-green-600">₹25,000</div>
+                    </div>
+                    
+                    <div class="bg-red-50 rounded p-3">
+                        <div class="text-sm font-medium text-red-800">What you should do:</div>
+                        <ul class="text-xs text-red-700 mt-1 space-y-1">
+                            <li>• Contact agriculture department</li>
+                            <li>• Apply for insurance</li>
+                            <li>• Explore alternative markets</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-gray-900 text-gray-100 rounded-lg p-6">
+            <h3 class="text-lg font-semibold mb-4">How the Calculation Works</h3>
+            <pre class="text-sm overflow-x-auto"><code>// Example Calculation
+Total Regional Loss: ₹1,24,00,000
+Number of Affected Farms: 850
+Average Annual Income: ₹2,50,000
+
+Per-Farmer Loss = ₹1,24,00,000 ÷ 850 = ₹1,45,88 per farmer
+Loss Percentage = (₹1,45,88 ÷ ₹2,50,000) × 100 = 58%
+
+// Classification:
+- &lt;20% = Low Impact (Acceptable)
+- 20-50% = Medium Impact (Sensitive) 
+- &gt;50% = High Impact (Critical)</code></pre>
+        </div>
+    </div>
+</body>
+</html>

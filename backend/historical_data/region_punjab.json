@@ -1,0 +1,24 @@
+[
+  {
+    "analysis_id": "ANA_20260111_215049",
+    "timestamp": "2026-01-11T21:50:49.421972",
+    "farmer_id": "test_farmer_123",
+    "region": "punjab",
+    "disease": "Healthy",
+    "severity": "Low",
+    "confidence": "90%",
+    "severity_score": 1,
+    "confidence_numeric": 90
+  },
+  {
+    "analysis_id": "ANA_20260111_215159",
+    "timestamp": "2026-01-11T21:51:59.672644",
+    "farmer_id": "test_farmer_123",
+    "region": "punjab",
+    "disease": "Healthy",
+    "severity": "Low",
+    "confidence": "90%",
+    "severity_score": 1,
+    "confidence_numeric": 90
+  }
+]
