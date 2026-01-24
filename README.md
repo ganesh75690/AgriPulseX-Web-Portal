@@ -53,6 +53,8 @@ A comprehensive, government-grade agricultural disease intelligence platform des
 
   <img width="1871" height="906" alt="Screenshot 2026-01-24 141937" src="https://github.com/user-attachments/assets/15914886-c827-4cc5-a958-8b0c282a4561" />
 
+  <img width="1847" height="916" alt="Screenshot 2026-01-24 142106" src="https://github.com/user-attachments/assets/da2be20e-0b6f-4153-b9af-541823bd237f" />
+
   <img width="1847" height="910" alt="Screenshot 2026-01-24 142001" src="https://github.com/user-attachments/assets/53684216-741f-410c-8d46-4bfefd4daa1d" />
 
   <img width="1861" height="914" alt="Screenshot 2026-01-24 142012" src="https://github.com/user-attachments/assets/b2466490-bf81-463a-8ffc-569885425090" />
