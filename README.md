@@ -47,6 +47,8 @@ A comprehensive, government-grade agricultural disease intelligence platform des
 - **Database**: In-memory mock database (easily replaceable with PostgreSQL)
 - **API Documentation**: Auto-generated Swagger/OpenAPI docs
 
+- <img width="1836" height="896" alt="Screenshot 2026-01-24 141846" src="https://github.com/user-attachments/assets/1d690737-3ab7-44b5-abea-66f057fd283d" />
+
   <img width="1867" height="901" alt="image" src="https://github.com/user-attachments/assets/667d8dba-0d54-4d22-9e0a-3cedfeb0e6b7" />
 
   <img width="1871" height="906" alt="Screenshot 2026-01-24 141937" src="https://github.com/user-attachments/assets/15914886-c827-4cc5-a958-8b0c282a4561" />
