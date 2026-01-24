@@ -47,184 +47,53 @@ A comprehensive, government-grade agricultural disease intelligence platform des
 - **Database**: In-memory mock database (easily replaceable with PostgreSQL)
 - **API Documentation**: Auto-generated Swagger/OpenAPI docs
 
-## 🚀 Quick Start
+  <img width="1867" height="901" alt="image" src="https://github.com/user-attachments/assets/667d8dba-0d54-4d22-9e0a-3cedfeb0e6b7" />
 
-### Prerequisites
-- Node.js 18+ 
-- Python 3.9+
-- npm or yarn
+  <img width="1871" height="906" alt="Screenshot 2026-01-24 141937" src="https://github.com/user-attachments/assets/15914886-c827-4cc5-a958-8b0c282a4561" />
 
-### Frontend Setup
-```bash
-# Install dependencies
-npm install
+  <img width="1847" height="910" alt="Screenshot 2026-01-24 142001" src="https://github.com/user-attachments/assets/53684216-741f-410c-8d46-4bfefd4daa1d" />
 
-# Start development server
-npm run dev
+  <img width="1861" height="914" alt="Screenshot 2026-01-24 142012" src="https://github.com/user-attachments/assets/b2466490-bf81-463a-8ffc-569885425090" />
 
-# Build for production
-npm run build
-```
+  <img width="1856" height="901" alt="Screenshot 2026-01-24 142024" src="https://github.com/user-attachments/assets/3cd8e7d6-5fc3-425a-a6dc-ab2dad8bc8ad" />
 
-### Backend Setup
-```bash
-# Navigate to backend directory
-cd backend
+  <img width="1857" height="910" alt="Screenshot 2026-01-24 142037" src="https://github.com/user-attachments/assets/5c123b26-8c95-4a16-b9c9-0ef0f67eabc9" />
 
-# Create virtual environment
-python -m venv venv
+  <img width="1850" height="913" alt="Screenshot 2026-01-24 142049" src="https://github.com/user-attachments/assets/6c70c9fc-de26-4140-b090-ae1902fad572" />
 
-# Activate virtual environment
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
+  <img width="1850" height="902" alt="Screenshot 2026-01-24 142137" src="https://github.com/user-attachments/assets/487dee3a-0e10-4bb3-b842-9e6e1422e942" />
 
-# Install dependencies
-pip install -r requirements.txt
+  <img width="1858" height="920" alt="Screenshot 2026-01-24 142114" src="https://github.com/user-attachments/assets/6b52fa70-0e7c-4f1d-8555-8dc4e3c77a83" />
 
-# Start API server
-python api/auth.py
-```
+  <img width="1849" height="907" alt="Screenshot 2026-01-24 142240" src="https://github.com/user-attachments/assets/7c0bf6d3-a0d2-42dd-8ce4-84192d6b4d1a" />
 
-## 📱 Access Credentials
+  <img width="1840" height="907" alt="Screenshot 2026-01-24 142310" src="https://github.com/user-attachments/assets/345ce64e-c406-425c-aeaa-32a80aa05b1a" />
 
-### Government Officer
-- **Username**: `officer@agri.gov.in`
-- **Password**: `officer123`
-- **Role**: Government Officer
+  <img width="1624" height="902" alt="Screenshot 2026-01-24 142332" src="https://github.com/user-attachments/assets/ac8f8614-179d-4915-8692-06a6e4a8d8cd" />
 
-### Field Employee
-- **Username**: `field@agri.gov.in`
-- **Password**: `field123`
-- **Role**: Field Employee
+  <img width="1624" height="902" alt="Screenshot 2026-01-24 142332" src="https://github.com/user-attachments/assets/ee556ed0-d5cd-4092-8ee3-298784df5866" />
 
-## 🌍 API Endpoints
+  <img width="1851" height="915" alt="Screenshot 2026-01-24 142348" src="https://github.com/user-attachments/assets/3777af02-f526-4e28-8e8d-7e08383f6aeb" />
 
-### Authentication
-- `POST /api/auth/login` - User login with role selection
-- `GET /api/auth/me` - Get current user information
+  <img width="1867" height="901" alt="Screenshot 2026-01-24 142417" src="https://github.com/user-attachments/assets/a4e8fa25-66fc-4d33-b76f-e6dbe16e4957" />
 
-### Reports
-- `POST /api/reports` - Submit new field report (Field Employee only)
-- `GET /api/reports` - Get all reports with cluster analysis (Officer only)
-- `GET /api/reports/{id}` - Get specific report details (Officer only)
-- `PUT /api/reports/{id}/status` - Update report status (Officer only)
+  <img width="1877" height="915" alt="Screenshot 2026-01-24 142406" src="https://github.com/user-attachments/assets/c3b0f857-eae1-4521-b9af-907c06cc016e" />
 
-## 🏛️ Government Compliance
 
-### Design System
-- Follows NIC (National Informatics Centre) design guidelines
-- High contrast accessibility for rural users
-- Professional government portal aesthetics
-- Mobile-first approach for field deployment
 
-### Policy Alignment
-- Ministry of Agriculture & Farmers Welfare standards
-- Integrated Pest Disease Management (IPDM) protocols
-- Food security and crop protection focus
-- Human-in-the-loop decision making
 
-### Audit & Security
-- All user actions logged for audit
-- Role-based permission enforcement
-- Secure session management
-- Data privacy compliance
 
-## 📊 Village Aggregation Logic
 
-The platform automatically detects disease clusters at the village level:
 
-```python
-def detect_village_clusters(reports):
-    village_reports = {}
-    for report in reports:
-        village = report["village"]
-        if village not in village_reports:
-            village_reports[village] = []
-        village_reports[village].append(report)
-    
-    clusters = []
-    for village, v_reports in village_reports.items():
-        if len(v_reports) >= 2:  # Cluster threshold
-            clusters.append({
-                "village": village,
-                "report_count": len(v_reports),
-                "diseases": list(set(r["disease"] for r in v_reports)),
-                "severity": "high" if any(r["severity"] == "High" for r in v_reports) else "medium"
-            })
-    
-    return clusters
-```
 
-## 🎯 Use Cases
 
-### Field Employees
-- Daily crop disease monitoring
-- Rapid disease reporting with photo evidence
-- Track personal reporting history
-- Receive assigned area notifications
 
-### Government Officers
-- Monitor regional disease outbreaks
-- Analyze village-level disease clusters
-- Make data-driven containment decisions
-- Generate policy recommendations
-- Track economic impact assessments
 
-## 📈 Performance Metrics
 
-- **Report Processing**: < 2 seconds for image analysis
-- **Cluster Detection**: Real-time aggregation
-- **Mobile Performance**: Optimized for 3G/4G networks
-- **Accessibility**: WCAG 2.1 AA compliant
 
-## 🔧 Development
 
-### Project Structure
-```
-src/
-├── components/           # React components
-│   ├── ui/              # Reusable UI components
-│   ├── Dashboard.tsx    # Officer dashboard
-│   ├── FieldEmployeeDashboard.tsx
-│   ├── ReportSubmission.tsx
-│   ├── MyReports.tsx
-│   ├── FieldReportsInbox.tsx
-│   └── ...
-├── api/                 # API configuration
-└── assets/              # Static assets
 
-backend/
-├── api/
-│   └── auth.py         # Main API endpoints
-└── requirements.txt    # Python dependencies
-```
 
-### Available Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
 
-## 🤝 Contributing
-
-This platform is designed for deployment in Indian agricultural departments. Key areas for enhancement:
-
-1. **Backend Database Integration**: Replace in-memory DB with PostgreSQL
-2. **Advanced AI Models**: Integrate with real disease detection models
-3. **SMS/WhatsApp Integration**: Field notifications for rural areas
-4. **Offline Support**: Progressive Web App capabilities
-5. **Multi-language Support**: Regional language support
-
-## 📄 License
-
-This project is designed for government agricultural departments. Please ensure compliance with local regulations when deploying.
-
-## 📞 Support
-
-For technical support or deployment assistance, please refer to the comprehensive documentation or contact the development team.
-
----
 
 **AgriPulseX** - Empowering Indian Agriculture with Intelligence-Driven Disease Management
